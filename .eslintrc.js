@@ -21,6 +21,10 @@ module.exports = {
         json: 'always',
       },
     ],
+    'react/function-component-definition': [
+      2,
+      { namedComponents: ['arrow-function', 'function-declaration'] },
+    ],
   },
   settings: {
     'import/parsers': {
