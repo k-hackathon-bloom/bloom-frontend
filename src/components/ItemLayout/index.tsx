@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Platform } from 'react-native';
+import { View, Platform, ViewStyle } from 'react-native';
 import styled from 'styled-components/native';
 import { ShadowedView } from 'react-native-fast-shadow';
 import responsive from '@utils/responsive';
@@ -24,10 +24,19 @@ const Container = styled(
 interface LayoutProps {
   children: React.ReactNode;
   hasShadow?: boolean;
+  style?: ViewStyle;
 }
 
-const ItemLayout: React.FC<LayoutProps> = ({ children, hasShadow = false }) => {
-  return <Container shadow={hasShadow}>{children}</Container>;
+const ItemLayout: React.FC<LayoutProps> = ({
+  children,
+  hasShadow = false,
+  style,
+}) => {
+  return (
+    <Container shadow={hasShadow} style={style}>
+      {children}
+    </Container>
+  );
 };
 
 export default ItemLayout;
