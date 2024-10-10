@@ -1,11 +1,17 @@
 import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import responsive from '@utils/responsive';
+import ScreenLayout from '@screens/ScreenLayout';
+import StyledText from '@styles/StyledText';
+import ItemLayout from '@components/ItemLayout';
 
 function App(): React.JSX.Element {
   return (
-    <SafeAreaView>
-      <Text>bloom</Text>
-    </SafeAreaView>
+    <ScreenLayout>
+      <StyledText style={{ fontSize: responsive(24) }}>bloom</StyledText>
+      <ItemLayout hasShadow={true}>
+        <StyledText>Item</StyledText>
+      </ItemLayout>
+    </ScreenLayout>
   );
 }
 

@@ -5,10 +5,11 @@
     "paths": {
       "~/*": ["./*"],
       "*": ["./*"],
-      "@assets/*": ["assets/*"],
-      "@components/*": ["components/*"],
-      "@screens/*": ["screens/*"],
-      "@styles/*": ["styles/*"],
-    },
-  },
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@screens/*": ["src/screens/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
+    }
+  }
 }

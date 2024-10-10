@@ -8,13 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* bloomTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* bloomTests.m */; };
+		020093DEE14D4B01A5A7AECA /* SpoqaHanSansNeo-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BF5175DB976748CBB3EF3C5A /* SpoqaHanSansNeo-Bold.ttf */; };
 		0C80B921A6F3F58F76C31292 /* libPods-bloom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-bloom.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		2C827E7DC5CC4CCAB218B147 /* SpoqaHanSansNeo-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EBA82E31A4E4ADCADC2FB1E /* SpoqaHanSansNeo-Thin.ttf */; };
+		304CC7DF6B1049AE9997CE83 /* SpoqaHanSansNeo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5FD82C720D9424A9841B491 /* SpoqaHanSansNeo-Regular.ttf */; };
 		315E1C87B24FBF9B4B1FEBA5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BF1F29B1C998935B65AB09B9 /* PrivacyInfo.xcprivacy */; };
+		4C1EBCA122F74AF1ABF5A5F2 /* GowunDodum-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D579AE0C6FB84D5CB417479F /* GowunDodum-Regular.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-bloom-bloomTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-bloom-bloomTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		861E4086973C4C01B9533431 /* NEXONLv1GothicBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB13A296FA554591905B3936 /* NEXONLv1GothicBold.ttf */; };
+		A87A55922DCF46B8AA671A8A /* SpoqaHanSansNeo-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95EB07927CC3422E93910D4A /* SpoqaHanSansNeo-Medium.ttf */; };
+		B192DE0E217D4EE5845D2E0B /* Freesentation-7Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E25B1ADF5EC74BBEACDA309B /* Freesentation-7Bold.ttf */; };
+		C54CDC30546C4ABB9E95497F /* SpoqaHanSansNeo-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 214E319FB9CA48C2A7140EC0 /* SpoqaHanSansNeo-Light.ttf */; };
+		FBB1B7E684A24DC585904F37 /* NEXONLv1GothicRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D93D96ABC6F84F3FA29EB23D /* NEXONLv1GothicRegular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,13 +48,22 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = bloom/main.m; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = bloom/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-bloom-bloomTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bloom-bloomTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		214E319FB9CA48C2A7140EC0 /* SpoqaHanSansNeo-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Light.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Light.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-bloom.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bloom.debug.xcconfig"; path = "Target Support Files/Pods-bloom/Pods-bloom.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-bloom.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bloom.release.xcconfig"; path = "Target Support Files/Pods-bloom/Pods-bloom.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-bloom-bloomTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bloom-bloomTests.debug.xcconfig"; path = "Target Support Files/Pods-bloom-bloomTests/Pods-bloom-bloomTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-bloom.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bloom.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6EBA82E31A4E4ADCADC2FB1E /* SpoqaHanSansNeo-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Thin.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Thin.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = bloom/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-bloom-bloomTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bloom-bloomTests.release.xcconfig"; path = "Target Support Files/Pods-bloom-bloomTests/Pods-bloom-bloomTests.release.xcconfig"; sourceTree = "<group>"; };
-		BF1F29B1C998935B65AB09B9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = bloom/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		95EB07927CC3422E93910D4A /* SpoqaHanSansNeo-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Medium.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Medium.ttf"; sourceTree = "<group>"; };
+		BF1F29B1C998935B65AB09B9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = bloom/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		BF5175DB976748CBB3EF3C5A /* SpoqaHanSansNeo-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Bold.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Bold.ttf"; sourceTree = "<group>"; };
+		D579AE0C6FB84D5CB417479F /* GowunDodum-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GowunDodum-Regular.ttf"; path = "../src/assets/fonts/GowunDodum-Regular.ttf"; sourceTree = "<group>"; };
+		D93D96ABC6F84F3FA29EB23D /* NEXONLv1GothicRegular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = NEXONLv1GothicRegular.ttf; path = ../src/assets/fonts/NEXONLv1GothicRegular.ttf; sourceTree = "<group>"; };
+		E25B1ADF5EC74BBEACDA309B /* Freesentation-7Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Freesentation-7Bold.ttf"; path = "../src/assets/fonts/Freesentation-7Bold.ttf"; sourceTree = "<group>"; };
+		E5FD82C720D9424A9841B491 /* SpoqaHanSansNeo-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Regular.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Regular.ttf"; sourceTree = "<group>"; };
+		EB13A296FA554591905B3936 /* NEXONLv1GothicBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = NEXONLv1GothicBold.ttf; path = ../src/assets/fonts/NEXONLv1GothicBold.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -127,6 +145,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				945FD3A45C414248A28EFF85 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -140,6 +159,22 @@
 				00E356EE1AD99517003FC87E /* bloomTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		945FD3A45C414248A28EFF85 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E25B1ADF5EC74BBEACDA309B /* Freesentation-7Bold.ttf */,
+				D579AE0C6FB84D5CB417479F /* GowunDodum-Regular.ttf */,
+				EB13A296FA554591905B3936 /* NEXONLv1GothicBold.ttf */,
+				D93D96ABC6F84F3FA29EB23D /* NEXONLv1GothicRegular.ttf */,
+				BF5175DB976748CBB3EF3C5A /* SpoqaHanSansNeo-Bold.ttf */,
+				214E319FB9CA48C2A7140EC0 /* SpoqaHanSansNeo-Light.ttf */,
+				95EB07927CC3422E93910D4A /* SpoqaHanSansNeo-Medium.ttf */,
+				E5FD82C720D9424A9841B491 /* SpoqaHanSansNeo-Regular.ttf */,
+				6EBA82E31A4E4ADCADC2FB1E /* SpoqaHanSansNeo-Thin.ttf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -249,6 +284,15 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				315E1C87B24FBF9B4B1FEBA5 /* PrivacyInfo.xcprivacy in Resources */,
+				B192DE0E217D4EE5845D2E0B /* Freesentation-7Bold.ttf in Resources */,
+				4C1EBCA122F74AF1ABF5A5F2 /* GowunDodum-Regular.ttf in Resources */,
+				861E4086973C4C01B9533431 /* NEXONLv1GothicBold.ttf in Resources */,
+				FBB1B7E684A24DC585904F37 /* NEXONLv1GothicRegular.ttf in Resources */,
+				020093DEE14D4B01A5A7AECA /* SpoqaHanSansNeo-Bold.ttf in Resources */,
+				C54CDC30546C4ABB9E95497F /* SpoqaHanSansNeo-Light.ttf in Resources */,
+				A87A55922DCF46B8AA671A8A /* SpoqaHanSansNeo-Medium.ttf in Resources */,
+				304CC7DF6B1049AE9997CE83 /* SpoqaHanSansNeo-Regular.ttf in Resources */,
+				2C827E7DC5CC4CCAB218B147 /* SpoqaHanSansNeo-Thin.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +532,7 @@
 				PRODUCT_NAME = bloom;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -513,6 +558,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = bloom;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

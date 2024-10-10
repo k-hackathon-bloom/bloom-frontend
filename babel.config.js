@@ -22,6 +22,7 @@ module.exports = {
           '@components': './src/components',
           '@screens': './src/screens',
           '@styles': './src/styles',
+          '@utils': './src/utils',
         },
       },
     ],
