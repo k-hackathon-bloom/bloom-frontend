@@ -17,11 +17,7 @@ const Container = styled(
     props.shadow &&
     `
       shadow-opacity: 0.01;
-      shadow-radius: 20;
-      shadow-offset: {
-        width: 0;
-        height: 0;
-      };
+      shadow-radius: 20px;
     `}
 `;
 
