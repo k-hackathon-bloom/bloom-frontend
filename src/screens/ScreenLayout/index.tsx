@@ -1,8 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View } from 'react-native';
-import styled, { ThemeProvider } from 'styled-components/native';
+import styled from 'styled-components/native';
 import responsive from '@utils/responsive';
-import theme from '@styles/theme';
 
 const Container = styled(SafeAreaView)`
   flex: 1;
@@ -20,11 +19,9 @@ interface LayoutProps {
 
 const ScreenLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <Container>
-        <Content>{children}</Content>
-      </Container>
-    </ThemeProvider>
+    <Container>
+      <Content>{children}</Content>
+    </Container>
   );
 };
 
