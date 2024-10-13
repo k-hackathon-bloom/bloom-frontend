@@ -57,6 +57,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = bloom/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-bloom-bloomTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bloom-bloomTests.release.xcconfig"; path = "Target Support Files/Pods-bloom-bloomTests/Pods-bloom-bloomTests.release.xcconfig"; sourceTree = "<group>"; };
 		95EB07927CC3422E93910D4A /* SpoqaHanSansNeo-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Medium.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Medium.ttf"; sourceTree = "<group>"; };
+		B12A5BB42CBC1EBB00EEC5B8 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		BF1F29B1C998935B65AB09B9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = bloom/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BF5175DB976748CBB3EF3C5A /* SpoqaHanSansNeo-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SpoqaHanSansNeo-Bold.ttf"; path = "../src/assets/fonts/SpoqaHanSansNeo-Bold.ttf"; sourceTree = "<group>"; };
 		D579AE0C6FB84D5CB417479F /* GowunDodum-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "GowunDodum-Regular.ttf"; path = "../src/assets/fonts/GowunDodum-Regular.ttf"; sourceTree = "<group>"; };
@@ -139,6 +140,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B12A5BB42CBC1EBB00EEC5B8 /* Config.xcconfig */,
 				13B07FAE1A68108700A75B9A /* bloom */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* bloomTests */,
@@ -516,6 +518,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RZDQM2RCZY;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = bloom/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -544,6 +547,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RZDQM2RCZY;
 				INFOPLIST_FILE = bloom/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -565,6 +569,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B12A5BB42CBC1EBB00EEC5B8 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CC = "";
