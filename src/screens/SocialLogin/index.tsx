@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ImageBackground, View, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ImageBackground, View, Image, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import responsive from '@utils/responsive';
@@ -10,6 +10,7 @@ import SocialLoginWebView from '@screens/SocialLogin/SocialLoginWebView';
 import KakaoIcon from '@assets/icons/kakao.svg';
 import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
+import useAnimatedValue from '@hooks/useAnimatedValue';
 
 const SloganContainer = styled(View)`
   position: absolute;
@@ -42,15 +43,45 @@ const HighlightedText = styled(StyledText)`
   letter-spacing: 0;
 `;
 
-const Slogan = () => (
-  <SloganContainer>
-    <AppIcon source={appIcon} />
-    <SloganText weight="bold">
-      {'일상에서 찾는 작은 기쁨,\n'}
-      <HighlightedText>bloom</HighlightedText>과 함께
-    </SloganText>
-  </SloganContainer>
-);
+const Slogan = () => {
+  const { animatedValue: iconY, animateToValue: afterIconY } =
+    useAnimatedValue(50);
+  const { animatedValue: iconOpacity, animateToValue: afterIconOpacity } =
+    useAnimatedValue(0);
+  const { animatedValue: textY, animateToValue: afterTextY } =
+    useAnimatedValue(50);
+  const { animatedValue: textOpacity, animateToValue: afterTextOpacity } =
+    useAnimatedValue(0);
+
+  const startAnimation = useCallback(() => {
+    afterIconY(0, 800).start();
+    afterIconOpacity(1, 800).start();
+    afterTextY(0, 800).start();
+    afterTextOpacity(1, 800).start();
+  }, [afterIconY, afterIconOpacity, afterTextY, afterTextOpacity]);
+
+  useEffect(() => {
+    startAnimation();
+  }, [startAnimation]);
+
+  return (
+    <SloganContainer>
+      <Animated.View
+        style={{ transform: [{ translateY: iconY }], opacity: iconOpacity }}
+      >
+        <AppIcon source={appIcon} />
+      </Animated.View>
+      <Animated.View
+        style={{ transform: [{ translateY: textY }], opacity: textOpacity }}
+      >
+        <SloganText weight="bold">
+          {'일상에서 찾는 작은 기쁨,\n'}
+          <HighlightedText>bloom</HighlightedText>과 함께
+        </SloganText>
+      </Animated.View>
+    </SloganContainer>
+  );
+};
 
 interface LoginButtonProps {
   onPress: () => void;
