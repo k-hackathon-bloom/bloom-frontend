@@ -3,24 +3,34 @@ import { SafeAreaView, View } from 'react-native';
 import styled from 'styled-components/native';
 import responsive from '@utils/responsive';
 
-const Container = styled(SafeAreaView)`
+const Container = styled(SafeAreaView)<{ backgroundColor?: string }>`
   flex: 1;
-  background-color: ${(props) => props.theme.colors.background};
+  background-color: ${(props) =>
+    props.backgroundColor || props.theme.colors.background};
 `;
 
-const Content = styled(View)`
+const Content = styled(View)<{ padding?: number }>`
   flex: 1;
-  padding: ${responsive(10)}px;
+  padding: ${(props) =>
+    props.padding !== undefined && props.padding !== null
+      ? `${responsive(props.padding)}px`
+      : `${responsive(10)}px`};
 `;
 
 interface LayoutProps {
   children: React.ReactNode;
+  padding?: number;
+  backgroundColor?: string;
 }
 
-const ScreenLayout: React.FC<LayoutProps> = ({ children }) => {
+const ScreenLayout: React.FC<LayoutProps> = ({
+  children,
+  padding,
+  backgroundColor,
+}) => {
   return (
-    <Container>
-      <Content>{children}</Content>
+    <Container backgroundColor={backgroundColor}>
+      <Content padding={padding}>{children}</Content>
     </Container>
   );
 };
