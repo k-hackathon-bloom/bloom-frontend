@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ImageBackground, View, Image, Animated } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import responsive from '@utils/responsive';
@@ -108,8 +109,12 @@ const SocialLogin = () => {
   const [showWebView, setShowWebView] = useState(false);
   const navigation = useNavigation();
 
-  const onTokenGenerated = (token: string) => {
-    console.log('생성된 토큰: ', token);
+  const onTokenGenerated = async (token: string) => {
+    try {
+      await AsyncStorage.setItem('authToken', token);
+    } catch (error) {
+      console.error('토큰을 저장하지 못했습니다.', error);
+    }
     // @ts-ignore
     navigation.navigate('Main');
   };
