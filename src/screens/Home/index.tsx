@@ -1,5 +1,5 @@
 import React from 'react';
-import StyledText from '@styles/StyledText';
+import StyledText from '@components/common/StyledText';
 import ScreenLayout from '@screens/ScreenLayout';
 
 const Home = () => {
