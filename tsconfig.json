@@ -10,6 +10,7 @@
       "@components/*": ["src/components/*"],
       "@env": [".env"],
       "@hooks/*": ["src/hooks/*"],
+      "@recoil/*": ["src/recoil/*"],
       "@screens/*": ["src/screens/*"],
       "@styles/*": ["src/styles/*"],
       "@type/*": ["src/types/*"],
