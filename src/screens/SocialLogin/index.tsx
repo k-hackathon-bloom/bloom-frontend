@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ImageBackground, View, Image, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import styled from 'styled-components/native';
+import { StackParamList } from '@type/ScreenParamList';
 import responsive from '@utils/responsive';
 import StyledText from '@styles/StyledText';
 import StyledButton from '@styles/StyledButton';
@@ -107,7 +109,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
 
 const SocialLogin = () => {
   const [showWebView, setShowWebView] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
 
   const onTokenGenerated = async (token: string) => {
     try {
@@ -115,7 +117,6 @@ const SocialLogin = () => {
     } catch (error) {
       console.error('토큰을 저장하지 못했습니다.', error);
     }
-    // @ts-ignore
     navigation.navigate('Main');
   };
 
