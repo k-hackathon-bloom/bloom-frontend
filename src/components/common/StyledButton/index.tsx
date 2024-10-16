@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import styled from 'styled-components/native';
-import StyledText from '@styles/StyledText';
-import responsive from '../../utils/responsive';
+import StyledText from '@components/common/StyledText';
+import responsive from '@utils/responsive';
 
 const Button = styled(TouchableOpacity)<{ backgroundColor?: string }>`
   padding: ${responsive(20, 'height')}px;
