@@ -1,10 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { StackParamList } from '@type/ScreenParamList';
 import SocialLogin from '@screens/SocialLogin';
 import BottomTabNavigator from '@screens/navigators/BottomTabNavigator';
 import UserSettings from '@screens/UserSettings';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<StackParamList>();
 
 const StackNavigator = () => {
   return (
