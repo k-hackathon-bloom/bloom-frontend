@@ -28,6 +28,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.7.1",
     "react-native-webview": "^13.12.3",
+    "recoil": "^0.7.7",
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
