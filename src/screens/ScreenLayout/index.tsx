@@ -14,7 +14,7 @@ const Content = styled(View)<{ padding?: number }>`
   padding: ${(props) =>
     props.padding !== undefined && props.padding !== null
       ? `${responsive(props.padding)}px`
-      : `${responsive(10)}px`};
+      : `${responsive(26)}px`};
 `;
 
 interface LayoutProps {
