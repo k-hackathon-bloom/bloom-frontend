@@ -1,6 +1,4 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Header, { HeaderProps } from '@components/common/Header';
 import {
   HeaderButtonProps,
@@ -10,7 +8,7 @@ import {
 } from '@components/common/HeaderButton';
 import UserSettingsIcon from '@assets/icons/user_info.svg';
 import ShopIcon from '@assets/icons/shop.svg';
-import { StackParamList } from '@type/ScreenParamList.ts';
+import useNavigate from '@hooks/useNavigate';
 
 const UserSettingsButton: React.FC<HeaderButtonProps> = ({ onPress }) => {
   return (
@@ -32,18 +30,14 @@ const ShopButton: React.FC = () => {
 };
 
 const HomeHeader: React.FC<HeaderProps> = ({ title }) => {
-  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
-
-  const handleUserSettingsPress = () => {
-    navigation.navigate('UserSettings');
-  };
+  const { navigateTo } = useNavigate();
 
   return (
     <Header
       title={title}
       rightContent={
         <HeaderButtonContainer>
-          <UserSettingsButton onPress={handleUserSettingsPress} />
+          <UserSettingsButton onPress={() => navigateTo('UserSettings')} />
           <ShopButton />
         </HeaderButtonContainer>
       }

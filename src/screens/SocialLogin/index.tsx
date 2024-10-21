@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ImageBackground, View, Image, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import styled from 'styled-components/native';
-import { StackParamList } from '@type/ScreenParamList';
 import responsive from '@utils/responsive';
 import StyledText from '@components/common/StyledText';
 import StyledButton from '@components/common/StyledButton';
@@ -14,6 +11,7 @@ import KakaoIcon from '@assets/icons/kakao.svg';
 import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
 import useAnimatedValue from '@hooks/useAnimatedValue';
+import useNavigate from '@hooks/useNavigate';
 
 const SloganContainer = styled(View)`
   position: absolute;
@@ -109,7 +107,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
 
 const SocialLogin = () => {
   const [showWebView, setShowWebView] = useState(false);
-  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+  const { navigateTo } = useNavigate();
 
   const onTokenGenerated = async (token: string) => {
     try {
@@ -117,7 +115,7 @@ const SocialLogin = () => {
     } catch (error) {
       console.error('토큰을 저장하지 못했습니다.', error);
     }
-    navigation.navigate('Main');
+    navigateTo('Main');
   };
 
   if (showWebView) {
