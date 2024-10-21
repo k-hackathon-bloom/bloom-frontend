@@ -1,11 +1,11 @@
 import React from 'react';
-import StyledText from '@components/common/StyledText';
 import ScreenLayout from '@screens/ScreenLayout';
+import UserSettingsHeader from '@screens/UserSettings/components/UserSettingsHeader';
 
 const UserSettings = () => {
   return (
     <ScreenLayout>
-      <StyledText>User Settings Screen</StyledText>
+      <UserSettingsHeader title="설정" />
     </ScreenLayout>
   );
 };
