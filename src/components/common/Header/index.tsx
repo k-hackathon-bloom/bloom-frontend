@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive.ts';
+import responsive from '@utils/responsive';
 
 export interface HeaderProps {
   title: string;

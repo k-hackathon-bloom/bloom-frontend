@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
 import Header, { HeaderProps } from '@components/common/Header';
 import {
   HeaderButtonProps,
@@ -8,6 +7,7 @@ import {
   HEADER_BUTTON_SIZE,
 } from '@components/common/HeaderButton';
 import BackIcon from '@assets/icons/back.svg';
+import useNavigate from '@hooks/useNavigate';
 
 const BackButton: React.FC<HeaderButtonProps> = ({ onPress }) => {
   return (
@@ -18,18 +18,14 @@ const BackButton: React.FC<HeaderButtonProps> = ({ onPress }) => {
 };
 
 const UserSettingsHeader: React.FC<HeaderProps> = ({ title }) => {
-  const navigation = useNavigation();
-
-  const handleBackPress = () => {
-    navigation.goBack();
-  };
+  const { goBack } = useNavigate();
 
   return (
     <Header
       title={title}
       leftContent={
         <HeaderButtonContainer>
-          <BackButton onPress={handleBackPress} />
+          <BackButton onPress={goBack} />
         </HeaderButtonContainer>
       }
     />

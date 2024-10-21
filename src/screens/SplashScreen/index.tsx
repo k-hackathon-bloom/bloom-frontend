@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { useSetRecoilState } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '@apis/client';
 import { userDataAtom } from '@recoil/atoms';
 import ScreenLayout from '@screens/ScreenLayout';
 import AnimatedIcon from '@screens/SplashScreen/AnimatedIcon';
-import { StackParamList } from '@type/ScreenParamList';
+import useNavigate from '@hooks/useNavigate';
 
 const LogoContainer = styled(View)`
   flex: 1;
@@ -18,7 +16,7 @@ const LogoContainer = styled(View)`
 `;
 
 const SplashScreen = () => {
-  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+  const { replaceTo } = useNavigate();
   const setUserData = useSetRecoilState(userDataAtom);
 
   const fetchUserData = useCallback(async () => {
@@ -42,18 +40,18 @@ const SplashScreen = () => {
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
           await fetchUserData();
-          navigation.replace('Main');
+          replaceTo('Main');
         } else {
-          navigation.replace('Login');
+          replaceTo('Login');
         }
       } catch (error) {
         console.error('인증 토큰을 가져오는 데 실패했습니다.', error);
-        navigation.replace('Login');
+        replaceTo('Login');
       }
     }, 2800);
 
     return () => clearTimeout(timeout);
-  }, [navigation, fetchUserData]);
+  }, [replaceTo, fetchUserData]);
 
   return (
     <ScreenLayout backgroundColor="white">

@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { View, TouchableOpacity } from 'react-native';
-import responsive from '@utils/responsive.ts';
+import responsive from '@utils/responsive';
 
 export interface HeaderButtonProps {
   onPress: () => void;
