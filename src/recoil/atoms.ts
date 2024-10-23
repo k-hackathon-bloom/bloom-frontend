@@ -9,3 +9,13 @@ export const userDataAtom = atom({
     isSurvey: false,
   },
 });
+
+export const expAtom = atom({
+  key: 'expAtom',
+  default: 0,
+});
+
+export const questsAtom = atom({
+  key: 'questsAtom',
+  default: [],
+});
