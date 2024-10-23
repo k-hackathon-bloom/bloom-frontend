@@ -12,16 +12,14 @@ const Button = styled(TouchableOpacity)<{ backgroundColor?: string }>`
   align-items: center;
   justify-content: center;
   background-color: ${({ backgroundColor, theme }) =>
-    backgroundColor || theme.colors.primary};
+    backgroundColor || theme.COLORS.BUTTON_PRIMARY};
 `;
-
-type FontWeight = 'thin' | 'light' | 'regular' | 'medium' | 'bold';
 
 interface ButtonProps {
   title: string;
   color?: string;
   fontSize?: number;
-  weight?: FontWeight;
+  weight?: 'THIN' | 'LIGHT' | 'REGULAR' | 'MEDIUM' | 'BOLD';
   backgroundColor?: string;
   onPress: () => void;
   children?: React.ReactNode;

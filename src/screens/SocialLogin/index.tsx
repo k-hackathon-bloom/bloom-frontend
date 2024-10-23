@@ -75,7 +75,7 @@ const Slogan = () => {
       <Animated.View
         style={{ transform: [{ translateY: textY }], opacity: textOpacity }}
       >
-        <SloganText weight="bold">
+        <SloganText weight="BOLD">
           {'일상에서 찾는 작은 기쁨,\n'}
           <HighlightedText>bloom</HighlightedText>과 함께
         </SloganText>
@@ -93,7 +93,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
     <StyledButton
       title="카카오 계정으로 로그인"
       color="#191600"
-      weight="bold"
+      weight="BOLD"
       backgroundColor="#FEE500"
       onPress={onPress}
     >

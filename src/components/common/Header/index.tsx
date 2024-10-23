@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <HeaderContainer>
       {leftContent && <LeftContent>{leftContent}</LeftContent>}
-      <HeaderTitle isCentered={isLeftContentPresent} weight="bold">
+      <HeaderTitle isCentered={isLeftContentPresent} weight="BOLD">
         {title}
       </HeaderTitle>
       {rightContent ? (

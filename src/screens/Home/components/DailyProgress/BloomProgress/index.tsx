@@ -38,7 +38,7 @@ const FlowerIconWrapper = styled(View)`
 const ProgressBar = styled(View)`
   width: ${responsive(100)}px;
   height: ${responsive(7)}px;
-  background-color: ${(props) => props.theme.colors.progressBackground};
+  background-color: ${(props) => props.theme.COLORS.PROGRESS_BAR_BACKGROUND};
   border-radius: ${responsive(3.5)}px;
   overflow: hidden;
 `;
@@ -107,8 +107,8 @@ const BloomProgress: React.FC<BloomProgressProps> = ({ exp }) => {
           <Animated.View style={{ right: progressRight, flex: 1 }}>
             <CurrentProgress
               colors={[
-                theme.colors.progressSecondary,
-                theme.colors.progressPrimary,
+                theme.COLORS.PROGRESS_BAR_SECONDARY,
+                theme.COLORS.PROGRESS_BAR_PRIMARY,
               ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
