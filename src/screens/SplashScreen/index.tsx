@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import { useSetRecoilState } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { useNetInfo } from '@react-native-community/netinfo';
 import apiClient from '@apis/client';
 import { userDataAtom } from '@recoil/atoms';
 import ScreenLayout from '@screens/ScreenLayout';
@@ -17,6 +18,7 @@ const LogoContainer = styled(View)`
 `;
 
 const SplashScreen = () => {
+  const netInfo = useNetInfo();
   const { replaceTo } = useNavigate();
   const setUserData = useSetRecoilState(userDataAtom);
 
@@ -40,27 +42,28 @@ const SplashScreen = () => {
   }, [setUserData]);
 
   useEffect(() => {
-    const timeout = setTimeout(async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        if (token) {
-          await fetchUserData();
-          replaceTo('Main');
-        } else {
-          replaceTo('Login');
-        }
-      } catch (error) {
+    const checkNetworkAndFetchData = async () => {
+      if (!netInfo.isInternetReachable) {
         Toast.show({
           type: 'error',
-          text1: '인증 토큰을 가져오는 데 실패했습니다.',
-          text2: String(error),
+          text1: '네트워크 연결을 확인해 주세요.',
         });
+        return;
+      }
+
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        await fetchUserData();
+        replaceTo('Main');
+      } else {
         replaceTo('Login');
       }
-    }, 2800);
+    };
+
+    const timeout = setTimeout(checkNetworkAndFetchData, 2100);
 
     return () => clearTimeout(timeout);
-  }, [replaceTo, fetchUserData]);
+  }, [netInfo.isInternetReachable, replaceTo, fetchUserData]);
 
   return (
     <ScreenLayout backgroundColor="white">
