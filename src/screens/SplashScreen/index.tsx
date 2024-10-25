@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import styled from 'styled-components/native';
 import { useSetRecoilState } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import apiClient from '@apis/client';
 import { userDataAtom } from '@recoil/atoms';
 import ScreenLayout from '@screens/ScreenLayout';
@@ -30,7 +31,11 @@ const SplashScreen = () => {
       };
       setUserData(userDataFromServer);
     } catch (error) {
-      console.error('유저 정보를 가져오는 데 실패했습니다.:', error);
+      Toast.show({
+        type: 'error',
+        text1: '유저 정보를 가져오는 데 실패했습니다.',
+        text2: String(error),
+      });
     }
   }, [setUserData]);
 
@@ -45,7 +50,11 @@ const SplashScreen = () => {
           replaceTo('Login');
         }
       } catch (error) {
-        console.error('인증 토큰을 가져오는 데 실패했습니다.', error);
+        Toast.show({
+          type: 'error',
+          text1: '인증 토큰을 가져오는 데 실패했습니다.',
+          text2: String(error),
+        });
         replaceTo('Login');
       }
     }, 2800);

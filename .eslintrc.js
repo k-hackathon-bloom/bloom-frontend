@@ -26,6 +26,7 @@ module.exports = {
       { namedComponents: ['arrow-function', 'function-declaration'] },
     ],
     'react/require-default-props': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
   settings: {
     'import/parsers': {

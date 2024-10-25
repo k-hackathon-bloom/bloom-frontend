@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ImageBackground, View, Image, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styled from 'styled-components/native';
+import Toast from 'react-native-toast-message';
 import responsive from '@utils/responsive';
 import StyledText from '@components/common/StyledText';
 import StyledButton from '@components/common/StyledButton';
@@ -113,7 +114,11 @@ const SocialLogin = () => {
     try {
       await AsyncStorage.setItem('authToken', token);
     } catch (error) {
-      console.error('토큰을 저장하지 못했습니다.', error);
+      Toast.show({
+        type: 'error',
+        text1: '토큰을 저장하지 못했습니다.',
+        text2: String(error),
+      });
     }
     navigateTo('Main');
   };

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 import apiClient from '@apis/client';
 
 interface SocialLoginResponse {
@@ -16,7 +17,11 @@ const useSocialLogin = (onTokenGenerated: (token: string) => void) => {
         const response = await apiClient.get<string>('/api/auth/kakao/login');
         setFetchedUri(response.data);
       } catch (error) {
-        console.error('로그인 URI를 가져오는 데 실패했습니다.', error);
+        Toast.show({
+          type: 'error',
+          text1: '로그인 URI를 가져오는 데 실패했습니다.',
+          text2: String(error),
+        });
       } finally {
         setLoading(false);
       }
@@ -33,7 +38,11 @@ const useSocialLogin = (onTokenGenerated: (token: string) => void) => {
       );
       onTokenGenerated(response.data.accessToken);
     } catch (error) {
-      console.error('인가 코드 처리에 실패했습니다.', error);
+      Toast.show({
+        type: 'error',
+        text1: '인가 코드 처리에 실패했습니다.',
+        text2: String(error),
+      });
     }
   };
 
