@@ -27,7 +27,7 @@ const renderTabIcon = (
   iconSize: number,
 ) => (
   <Icon
-    fill={focused ? theme.colors.primary : theme.colors.inactive}
+    fill={focused ? theme.COLORS.BUTTON_PRIMARY : theme.COLORS.BUTTON_DISABLED}
     width={iconSize}
     height={iconSize}
   />
@@ -42,7 +42,7 @@ const BottomTabNavigator = (): JSX.Element => {
       screenOptions={{
         tabBarStyle: {
           height: responsive(80, 'height'),
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.COLORS.SCREEN_BACKGROUND,
           borderTopWidth: 0,
         },
         tabBarShowLabel: false,

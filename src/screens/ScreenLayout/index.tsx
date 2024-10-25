@@ -6,7 +6,7 @@ import responsive from '@utils/responsive';
 const Container = styled(SafeAreaView)<{ backgroundColor?: string }>`
   flex: 1;
   background-color: ${(props) =>
-    props.backgroundColor || props.theme.colors.background};
+    props.backgroundColor || props.theme.COLORS.SCREEN_BACKGROUND};
 `;
 
 const Content = styled(View)<{ padding?: number }>`

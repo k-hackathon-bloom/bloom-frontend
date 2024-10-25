@@ -22,7 +22,6 @@ const Title = styled(StyledText)`
 `;
 
 const ProgressText = styled(StyledText)`
-  font-family: ${(props) => props.theme.fonts.medium};
   margin-top: ${responsive(5)}px;
   font-size: ${responsive(27)}px;
   letter-spacing: ${responsive(-1.5)}px;
@@ -45,14 +44,14 @@ const QuestProgress: React.FC<QuestProgressProps> = ({
         size={responsive(160)}
         width={responsive(10)}
         fill={progressPercentage}
-        tintColor={theme.colors.progressPrimary}
-        backgroundColor={theme.colors.progressBackground}
+        tintColor={theme.COLORS.PROGRESS_BAR_PRIMARY}
+        backgroundColor={theme.COLORS.PROGRESS_BAR_BACKGROUND}
         rotation={0}
       >
         {() => (
           <TextContainer>
             <Title>퀘스트 진행률</Title>
-            <ProgressText>
+            <ProgressText weight="MEDIUM">
               {completedQuests} / {totalQuests}
             </ProgressText>
           </TextContainer>

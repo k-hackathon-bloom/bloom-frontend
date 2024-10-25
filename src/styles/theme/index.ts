@@ -1,19 +1,19 @@
 const theme = {
-  colors: {
-    background: '#F5F5F5',
-    text: '#1F1F1F',
-    primary: '#5494DA',
-    inactive: '#DFDFDF',
-    progressBackground: '#E0E0E0',
-    progressPrimary: '#5558FF',
-    progressSecondary: '#00C0FF',
+  COLORS: {
+    SCREEN_BACKGROUND: '#F5F5F5',
+    TEXT_DEFAULT: '#1F1F1F',
+    BUTTON_PRIMARY: '#5494DA',
+    BUTTON_DISABLED: '#DFDFDF',
+    PROGRESS_BAR_BACKGROUND: '#E0E0E0',
+    PROGRESS_BAR_PRIMARY: '#5558FF',
+    PROGRESS_BAR_SECONDARY: '#00C0FF',
   },
-  fonts: {
-    thin: 'SpoqaHanSansNeo-Thin',
-    light: 'SpoqaHanSansNeo-Light',
-    regular: 'SpoqaHanSansNeo-Regular',
-    medium: 'SpoqaHanSansNeo-Medium',
-    bold: 'SpoqaHanSansNeo-Bold',
+  FONT_WEIGHTS: {
+    THIN: 'SpoqaHanSansNeo-Thin',
+    LIGHT: 'SpoqaHanSansNeo-Light',
+    REGULAR: 'SpoqaHanSansNeo-Regular',
+    MEDIUM: 'SpoqaHanSansNeo-Medium',
+    BOLD: 'SpoqaHanSansNeo-Bold',
   },
 };
 

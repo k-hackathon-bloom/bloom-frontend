@@ -1,10 +1,11 @@
 import styled from 'styled-components/native';
 
 const StyledText = styled.Text<{
-  weight?: 'thin' | 'light' | 'regular' | 'medium' | 'bold';
+  weight?: 'THIN' | 'LIGHT' | 'REGULAR' | 'MEDIUM' | 'BOLD';
 }>`
-  color: ${(props) => props.theme.colors.text};
-  font-family: ${(props) => props.theme.fonts[props.weight || 'regular']};
+  color: ${(props) => props.theme.COLORS.TEXT_DEFAULT};
+  font-family: ${(props) =>
+    props.theme.FONT_WEIGHTS[props.weight || 'REGULAR']};
 `;
 
 export default StyledText;
