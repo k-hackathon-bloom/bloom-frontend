@@ -1,10 +1,18 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Dimensions } from 'react-native';
 import { BaseToastProps, BaseToast } from 'react-native-toast-message';
+import { ShadowedView } from 'react-native-fast-shadow';
 import theme from '@styles/theme';
 import responsive from '@utils/responsive';
 
 const { width } = Dimensions.get('window');
+
+const ToastWrapper = styled(ShadowedView)`
+  shadow-opacity: 0.05;
+  shadow-radius: ${responsive(10, 'height')}px;
+  shadow-offset: 0px 0px;
+`;
 
 const commonStyle = {
   style: {
@@ -30,16 +38,18 @@ const commonStyle = {
 };
 
 const createToast = (props: BaseToastProps, borderColor: string) => (
-  <BaseToast
-    {...props}
-    style={{
-      ...commonStyle.style,
-      borderLeftColor: borderColor,
-    }}
-    contentContainerStyle={commonStyle.contentContainerStyle}
-    text1Style={commonStyle.text1Style}
-    text2Style={commonStyle.text2Style}
-  />
+  <ToastWrapper>
+    <BaseToast
+      {...props}
+      style={{
+        ...commonStyle.style,
+        borderLeftColor: borderColor,
+      }}
+      contentContainerStyle={commonStyle.contentContainerStyle}
+      text1Style={commonStyle.text1Style}
+      text2Style={commonStyle.text2Style}
+    />
+  </ToastWrapper>
 );
 
 const toastStyle = {
