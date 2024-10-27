@@ -1,52 +1,70 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
 import responsive from '@utils/responsive';
 
-const Button = styled(TouchableOpacity)<{ backgroundColor?: string }>`
-  padding: ${responsive(20, 'height')}px;
-  width: 88%;
-  border-radius: ${responsive(8)}px;
+const Button = styled(TouchableOpacity)<{
+  buttonTheme: 'primary' | 'secondary';
+}>`
+  background-color: ${(props) =>
+    props.buttonTheme === 'secondary'
+      ? 'white'
+      : props.theme.COLORS.BUTTON_PRIMARY};
+  width: 100%;
+  padding: ${responsive(16, 'height')}px;
+  border-radius: ${responsive(6, 'height')}px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: ${({ backgroundColor, theme }) =>
-    backgroundColor || theme.COLORS.BUTTON_PRIMARY};
+`;
+
+const ButtonTitle = styled(StyledText)<{
+  buttonTheme: 'primary' | 'secondary';
+}>`
+  font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
+  font-size: ${responsive(15, 'height')}px;
+  color: ${(props) =>
+    props.buttonTheme === 'secondary'
+      ? props.theme.COLORS.BUTTON_PRIMARY
+      : 'white'};
+`;
+
+const IconWrapper = styled(View)`
+  align-items: center;
+  justify-content: center;
+  margin-right: ${responsive(10, 'height')}px;
 `;
 
 interface ButtonProps {
+  buttonTheme?: 'primary' | 'secondary';
   title: string;
-  color?: string;
-  fontSize?: number;
-  weight?: 'THIN' | 'LIGHT' | 'REGULAR' | 'MEDIUM' | 'BOLD';
-  backgroundColor?: string;
+  icon?: React.ReactNode;
+  buttonStyle?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
   onPress: () => void;
-  children?: React.ReactNode;
 }
 
 const StyledButton: React.FC<ButtonProps> = ({
+  buttonTheme = 'primary',
   title,
-  color,
-  fontSize,
-  weight,
+  icon,
+  buttonStyle,
+  titleStyle,
   onPress,
-  backgroundColor,
-  children,
 }) => {
   return (
-    <Button onPress={onPress} backgroundColor={backgroundColor}>
-      {children && <View>{children}</View>}
-      <StyledText
-        weight={weight}
-        style={{
-          marginLeft: children ? responsive(10, 'height') : 0,
-          color,
-          fontSize: fontSize || responsive(16, 'height'),
-        }}
-      >
+    <Button onPress={onPress} buttonTheme={buttonTheme} style={buttonStyle}>
+      {icon && <IconWrapper>{icon}</IconWrapper>}
+      <ButtonTitle buttonTheme={buttonTheme} style={titleStyle}>
         {title}
-      </StyledText>
+      </ButtonTitle>
     </Button>
   );
 };
