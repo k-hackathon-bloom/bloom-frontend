@@ -8,6 +8,7 @@ import StyledText from '@components/common/StyledText';
 import StyledButton from '@components/common/StyledButton';
 import ScreenLayout from '@screens/ScreenLayout';
 import SocialLoginWebView from '@screens/SocialLogin/SocialLoginWebView';
+import theme from '@styles/theme';
 import KakaoIcon from '@assets/icons/kakao.svg';
 import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
@@ -23,7 +24,7 @@ const SloganContainer = styled(View)`
 const LoginButtonContainer = styled(View)`
   position: absolute;
   bottom: ${responsive(75, 'height')}px;
-  width: 100%;
+  width: 88%;
   align-items: center;
 `;
 
@@ -35,13 +36,13 @@ const AppIcon = styled(Image)`
 
 const SloganText = styled(StyledText)`
   font-size: ${responsive(28, 'height')}px;
-  color: #5d41ff;
+  color: ${(props) => props.theme.COLORS.TEXT_SLOGAN};
   letter-spacing: ${responsive(-1, 'height')}px;
 `;
 
 const HighlightedText = styled(StyledText)`
   font-family: 'NEXONLv1GothicBold';
-  color: #5d41ff;
+  color: ${(props) => props.theme.COLORS.TEXT_SLOGAN};
   letter-spacing: 0;
 `;
 
@@ -93,16 +94,19 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
   <LoginButtonContainer>
     <StyledButton
       title="카카오 계정으로 로그인"
-      color="#191600"
-      weight="BOLD"
-      backgroundColor="#FEE500"
+      icon={
+        <KakaoIcon
+          width={responsive(20, 'height')}
+          height={responsive(20, 'height')}
+        />
+      }
+      titleStyle={{
+        color: theme.COLORS.TEXT_KAKAO,
+        fontFamily: theme.FONT_WEIGHTS.BOLD,
+      }}
+      buttonStyle={{ backgroundColor: theme.COLORS.BUTTON_KAKAO }}
       onPress={onPress}
-    >
-      <KakaoIcon
-        width={responsive(20, 'height')}
-        height={responsive(20, 'height')}
-      />
-    </StyledButton>
+    />
   </LoginButtonContainer>
 );
 
