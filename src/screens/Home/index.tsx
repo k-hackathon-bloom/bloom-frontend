@@ -7,10 +7,13 @@ import HomeHeader from '@screens/Home/components/HomeHeader';
 import DailyProgress from '@screens/Home/components/DailyProgress';
 import apiClient from '@apis/client';
 import Quest from '@type/Quest';
+import ModalLayout from '@components/ModalLayout';
+import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 
 const Home = () => {
   const userData = useRecoilValue(userDataAtom);
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
+  const [questModalVisible, setQuestModalVisible] = useState(false);
 
   const fetchAllQuests = useCallback(async () => {
     try {
@@ -39,6 +42,18 @@ const Home = () => {
     <ScreenLayout>
       <HomeHeader title={`${userData.nickname}님 안녕하세요!`} />
       <DailyProgress />
+      <ModalLayout
+        visible={questModalVisible}
+        title="데일리 퀘스트 선택"
+        description="데일리 퀘스트는 3개 이상 선택해야 해요."
+        content={
+          <QuestModalContent
+            quests={allQuests}
+            setModalVisible={setQuestModalVisible}
+          />
+        }
+        onClose={() => setQuestModalVisible(false)}
+      />
     </ScreenLayout>
   );
 };
