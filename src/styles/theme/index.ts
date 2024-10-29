@@ -10,6 +10,7 @@ const theme = {
     TOAST_SUCCESS: '#A1F396',
     TOAST_ERROR: '#FF7171',
     TOAST_INFO: '#60AAFF',
+    ITEM_SELECTED: '#E7F5FE',
   },
   FONT_WEIGHTS: {
     THIN: 'SpoqaHanSansNeo-Thin',
