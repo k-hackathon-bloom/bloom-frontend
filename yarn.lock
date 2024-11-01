@@ -3987,6 +3987,7 @@ __metadata:
     react-native-screens: ^3.34.0
     react-native-svg: ^15.7.1
     react-native-svg-transformer: ^1.5.0
+    react-native-swipe-list-view: ^3.2.9
     react-native-toast-message: ^2.2.1
     react-native-webview: ^13.12.3
     react-test-renderer: 18.3.1
@@ -9386,6 +9387,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: ad7f711883ee45673486fe6bedadf8490bb06fd36e6de5d2f00898e6ac6c61ed34a5a8f7e6b25684c93e44ab51f9ea76642abfcca6a29462bc525f97204e6f41
+  languageName: node
+  linkType: hard
+
+"react-native-swipe-list-view@npm:^3.2.9":
+  version: 3.2.9
+  resolution: "react-native-swipe-list-view@npm:3.2.9"
+  peerDependencies:
+    prop-types: ">=15.5.0"
+    react: ">=0.14.8"
+    react-native: ">=0.23.1"
+  checksum: e6fa7f60bcdffdffe0567144e01f4e53b78eff2dfb7f5bad0f560336d039afc5b02603281b5ef0c8b0de86f1cd94c50f943676f25c3f42cc390bedb02df9536d
   languageName: node
   linkType: hard
 
