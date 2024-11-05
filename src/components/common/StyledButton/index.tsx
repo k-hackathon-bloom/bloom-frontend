@@ -48,7 +48,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   buttonStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
-  onPress: () => void;
+  onPress: (...args: any[]) => any;
 }
 
 const StyledButton: React.FC<ButtonProps> = ({

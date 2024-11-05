@@ -129,7 +129,7 @@ const SocialLogin = () => {
 
   if (showWebView) {
     return (
-      <ScreenLayout backgroundColor="white" padding={0}>
+      <ScreenLayout backgroundColor="white">
         <SocialLoginWebView onTokenGenerated={onTokenGenerated} />
       </ScreenLayout>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, View, StyleProp, ViewStyle } from 'react-native';
 import styled from 'styled-components/native';
 import responsive from '@utils/responsive';
 
@@ -9,28 +9,25 @@ const Container = styled(SafeAreaView)<{ backgroundColor?: string }>`
     props.backgroundColor || props.theme.COLORS.SCREEN_BACKGROUND};
 `;
 
-const Content = styled(View)<{ padding?: number }>`
+const Content = styled(View)`
   flex: 1;
-  padding: ${(props) =>
-    props.padding !== undefined && props.padding !== null
-      ? `${responsive(props.padding)}px`
-      : `${responsive(26)}px`};
+  padding: ${responsive(26)}px ${responsive(26)}px 0 ${responsive(26)}px;
 `;
 
 interface LayoutProps {
   children: React.ReactNode;
-  padding?: number;
   backgroundColor?: string;
+  contentStyle?: StyleProp<ViewStyle>;
 }
 
 const ScreenLayout: React.FC<LayoutProps> = ({
   children,
-  padding,
   backgroundColor,
+  contentStyle,
 }) => {
   return (
     <Container backgroundColor={backgroundColor}>
-      <Content padding={padding}>{children}</Content>
+      <Content style={contentStyle}>{children}</Content>
     </Container>
   );
 };

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Modal, View, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
+import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
 import responsive from '@utils/responsive';
+import toastStyle from '@styles/toastStyle';
 
 const Overlay = styled(View)`
   background-color: rgba(0, 0, 0, 0.5);
@@ -76,6 +78,12 @@ const ModalLayout: React.FC<ModalProps> = ({
           </TouchableWithoutFeedback>
         </Overlay>
       </TouchableWithoutFeedback>
+      <Toast
+        config={toastStyle}
+        position="bottom"
+        bottomOffset={responsive(60, 'height')}
+        visibilityTime={2000}
+      />
     </Modal>
   );
 };

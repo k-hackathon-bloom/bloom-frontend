@@ -3,6 +3,7 @@ interface Quest {
   title: string;
   iconUrl: string;
   maxCount: number;
+  isDone: boolean;
 }
 
 export default Quest;
