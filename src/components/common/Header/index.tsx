@@ -13,6 +13,7 @@ export interface HeaderProps {
 const HeaderContainer = styled(View)`
   flex-direction: row;
   align-items: center;
+  margin-bottom: ${responsive(20, 'height')}px;
 `;
 
 const HeaderTitle = styled(StyledText)<{ isCentered: boolean }>`

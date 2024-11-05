@@ -18,7 +18,7 @@ function App(): React.JSX.Element {
         <Toast
           config={toastStyle}
           position="bottom"
-          bottomOffset={responsive(50, 'height')}
+          bottomOffset={responsive(60, 'height')}
           visibilityTime={2000}
         />
       </ThemeProvider>

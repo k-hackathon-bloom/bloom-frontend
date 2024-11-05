@@ -9,6 +9,8 @@ import responsive from '@utils/responsive';
 const { width } = Dimensions.get('window');
 
 const ToastWrapper = styled(ShadowedView)`
+  background: white;
+  border-radius: 6px;
   shadow-opacity: 0.05;
   shadow-radius: ${responsive(10, 'height')}px;
   shadow-offset: 0px 0px;

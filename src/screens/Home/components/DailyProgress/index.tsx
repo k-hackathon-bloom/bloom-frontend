@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import styled from 'styled-components/native';
 import BloomProgress from '@screens/Home/components/DailyProgress/BloomProgress';
 import QuestProgress from '@screens/Home/components/DailyProgress/QuestProgress';
-import responsive from '@utils/responsive';
 import { useRecoilValue } from 'recoil';
 import { expAtom, questsAtom } from '@recoil/atoms';
 import Quest from '@type/Quest';
@@ -11,7 +10,6 @@ import Quest from '@type/Quest';
 const DailyProgressContainer = styled(View)`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: ${responsive(20, 'height')}px;
 `;
 
 const DailyProgress = () => {

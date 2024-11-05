@@ -41,7 +41,7 @@ const BottomTabNavigator = (): JSX.Element => {
       initialRouteName="Home"
       screenOptions={{
         tabBarStyle: {
-          height: responsive(80, 'height'),
+          height: responsive(100, 'height'),
           backgroundColor: theme.COLORS.SCREEN_BACKGROUND,
           borderTopWidth: 0,
         },
