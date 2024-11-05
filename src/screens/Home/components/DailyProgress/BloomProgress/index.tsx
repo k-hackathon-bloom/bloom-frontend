@@ -59,7 +59,7 @@ const BloomProgress: React.FC<BloomProgressProps> = ({ exp }) => {
 
   useEffect(() => {
     afterProgressRight(
-      responsive(100) - (exp / 9) * 100,
+      responsive(100) - (exp / 9) * responsive(100),
       500,
       0,
       false,

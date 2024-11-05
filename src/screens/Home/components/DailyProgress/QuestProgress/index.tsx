@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -36,7 +36,15 @@ const QuestProgress: React.FC<QuestProgressProps> = ({
   totalQuests,
   completedQuests,
 }) => {
-  const progressPercentage = (completedQuests / totalQuests) * 100;
+  const [progressPercentage, setProgressPercentage] = useState(() =>
+    totalQuests ? (completedQuests / totalQuests) * 100 : 0,
+  );
+
+  useEffect(() => {
+    if (totalQuests > 0) {
+      setProgressPercentage((completedQuests / totalQuests) * 100);
+    }
+  }, [completedQuests, totalQuests]);
 
   return (
     <QuestProgressContainer>
