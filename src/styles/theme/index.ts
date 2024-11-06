@@ -4,6 +4,8 @@ const theme = {
     TEXT_DEFAULT: '#1F1F1F',
     TEXT_SLOGAN: '#5D41FF',
     TEXT_KAKAO: '#191600',
+    TEXT_DAILY_QUESTION: '#5494DA',
+    TEXT_DAILY_SAYING: '#7ADBC4',
     BUTTON_PRIMARY: '#5494DA',
     BUTTON_DISABLED: '#DFDFDF',
     BUTTON_KAKAO: '#FEE500',
@@ -16,6 +18,8 @@ const theme = {
     TOAST_ERROR: '#FF7171',
     TOAST_INFO: '#60AAFF',
     ITEM_SELECTED: '#E7F5FE',
+    BOX_DAILY_QUESTION: '#E0EFFF',
+    BOX_DAILY_SAYING: '#E6F7F3',
   },
   FONT_WEIGHTS: {
     THIN: 'SpoqaHanSansNeo-Thin',
