@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import ScreenLayout from '@screens/ScreenLayout';
 import DiaryHeader from '@screens/Diary/components/DiaryHeader';
@@ -9,6 +9,8 @@ import DoneListHeader from '@screens/Diary/components/DoneListHeader';
 import DoneListItem, {
   AddTaskButton,
 } from '@screens/Diary/components/DoneListItem';
+import ModalLayout from '@components/ModalLayout';
+import TaskModalContent from '@screens/Diary/components/TaskModal/TaskModalContent';
 import apiClient from '@apis/client';
 import DoneTask from '@type/DoneTask';
 import SpacedView from '@components/common/SpacedView';
@@ -21,6 +23,9 @@ const Diary = () => {
   // eslint-disable-next-line
   const [saying, setSaying] = useState('');
   const [doneList, setDoneList] = useState<DoneTask[]>([]);
+  const [taskModalVisible, setTaskModalVisible] = useState(false);
+  const [selectedTask, setselectedTask] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
 
   const getLocalDateString = () => {
     const offset = date.getTimezoneOffset() * 60000;
@@ -48,7 +53,7 @@ const Diary = () => {
     }
   }, [localDate]);
 
-  const addTask = async () => {
+  const handleAddTask = async () => {
     const formData = new FormData();
     const newTask = {
       doneDate: localDate,
@@ -71,23 +76,67 @@ const Diary = () => {
     }
   };
 
+  const handleDeleteTask = async (taskId: number) => {
+    Alert.alert('항목 삭제', '이 항목을 삭제하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '확인',
+        onPress: async () => {
+          try {
+            await apiClient.delete(`/api/done-list/${taskId}`);
+            await fetchTasks();
+          } catch (error) {
+            Toast.show({
+              type: 'error',
+              text1: '던 리스트 항목을 삭제하는 데 실패했습니다.',
+              text2: String(error),
+            });
+          }
+        },
+      },
+    ]);
+  };
+
   useEffect(() => {
     fetchTasks();
   }, [date, fetchTasks]);
 
   return (
     <ScreenLayout>
-      <DiaryHeader title={getFormatedDate(date)} setDate={setDate} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <DiaryHeader
+        title={getFormatedDate(date)}
+        date={date}
+        setDate={setDate}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={!isSwiping}
+      >
         <DailyInspiration question={question} saying={saying} />
         <DoneListHeader />
         <SpacedView gap={responsive(8, 'height')}>
           {doneList.map((item) => (
-            <DoneListItem key={item.id} title={item.title} />
+            <DoneListItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              handleOpenModal={() => {
+                setselectedTask(item.id);
+                setTaskModalVisible(true);
+              }}
+              handleDeleteTask={handleDeleteTask}
+              setIsSwiping={setIsSwiping}
+            />
           ))}
-          <AddTaskButton onPress={addTask} />
+          <AddTaskButton onPress={handleAddTask} />
         </SpacedView>
       </ScrollView>
+      <ModalLayout
+        title={getFormatedDate(date)}
+        visible={taskModalVisible}
+        content={<TaskModalContent id={selectedTask} />}
+        onClose={() => setTaskModalVisible(false)}
+      />
     </ScreenLayout>
   );
 };
