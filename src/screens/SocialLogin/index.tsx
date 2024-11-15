@@ -14,6 +14,7 @@ import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
 import useAnimatedValue from '@hooks/useAnimatedValue';
 import useNavigate from '@hooks/useNavigate';
+import useFetchUserData from '@hooks/useFetchUserData';
 
 const SloganContainer = styled(View)`
   position: absolute;
@@ -113,6 +114,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
 const SocialLogin = () => {
   const [showWebView, setShowWebView] = useState(false);
   const { navigateTo } = useNavigate();
+  const { fetchUserData } = useFetchUserData();
 
   const onTokenGenerated = async (token: string) => {
     try {
@@ -124,12 +126,21 @@ const SocialLogin = () => {
         text2: String(error),
       });
     }
+    await fetchUserData();
     navigateTo('Main');
   };
 
   if (showWebView) {
     return (
-      <ScreenLayout backgroundColor="white">
+      <ScreenLayout
+        backgroundColor="white"
+        contentStyle={{
+          paddingLeft: 0,
+          paddingRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+        }}
+      >
         <SocialLoginWebView onTokenGenerated={onTokenGenerated} />
       </ScreenLayout>
     );

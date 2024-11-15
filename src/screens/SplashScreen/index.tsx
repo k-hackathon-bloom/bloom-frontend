@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
-import { useSetRecoilState } from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { useNetInfo } from '@react-native-community/netinfo';
-import apiClient from '@apis/client';
-import { userDataAtom } from '@recoil/atoms';
 import ScreenLayout from '@screens/ScreenLayout';
 import AnimatedIcon from '@screens/SplashScreen/AnimatedIcon';
 import useNavigate from '@hooks/useNavigate';
+import useFetchUserData from '@hooks/useFetchUserData';
 
 const LogoContainer = styled(View)`
   flex: 1;
@@ -20,26 +18,7 @@ const LogoContainer = styled(View)`
 const SplashScreen = () => {
   const netInfo = useNetInfo();
   const { replaceTo } = useNavigate();
-  const setUserData = useSetRecoilState(userDataAtom);
-
-  const fetchUserData = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/user');
-      const userDataFromServer = {
-        nickname: response.data.nickname,
-        age: response.data.age,
-        gender: response.data.gender,
-        isSurvey: response.data.isSurvey,
-      };
-      setUserData(userDataFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '유저 정보를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, [setUserData]);
+  const { fetchUserData } = useFetchUserData();
 
   useEffect(() => {
     const checkNetworkAndFetchData = async () => {
