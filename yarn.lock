@@ -4001,6 +4001,7 @@ __metadata:
     react-native-dotenv: ^3.4.11
     react-native-fast-shadow: ^0.1.1
     react-native-gesture-handler: ^2.20.0
+    react-native-image-picker: ^7.1.2
     react-native-linear-gradient: ^2.8.3
     react-native-modal-datetime-picker: ^18.0.0
     react-native-reanimated: ^3.15.5
@@ -9323,6 +9324,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: f573bc3717ae0209ff30bf62b95b3c7f11bd97f4797090211bce416c250388f55d1995aac0a7f1bbc99b06223ea64cbeae8d4ef88dcb8c877201b49163ea0e4b
+  languageName: node
+  linkType: hard
+
+"react-native-image-picker@npm:^7.1.2":
+  version: 7.1.2
+  resolution: "react-native-image-picker@npm:7.1.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: af52328b7cb06c28549442f0d923cfa92dde8d5a968a642336df4c882f81adbf0e5e606a14de27f96883a76fa1e03230061c4080011c9107942edebc8e09c478
   languageName: node
   linkType: hard
 
