@@ -88,7 +88,7 @@ interface TaskUpdate {
   deletedPhotoIds?: number[];
 }
 
-interface TaskModalContentHandles {
+export interface TaskModalContentHandles {
   saveTask: () => Promise<void>;
 }
 
