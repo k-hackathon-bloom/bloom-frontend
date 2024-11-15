@@ -48,6 +48,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   buttonStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
+  disabled?: boolean;
   onPress: (...args: any[]) => any;
 }
 
@@ -57,10 +58,16 @@ const StyledButton: React.FC<ButtonProps> = ({
   icon,
   buttonStyle,
   titleStyle,
+  disabled,
   onPress,
 }) => {
   return (
-    <Button onPress={onPress} buttonTheme={buttonTheme} style={buttonStyle}>
+    <Button
+      buttonTheme={buttonTheme}
+      style={buttonStyle}
+      disabled={disabled}
+      onPress={onPress}
+    >
       {icon && <IconWrapper>{icon}</IconWrapper>}
       <ButtonTitle buttonTheme={buttonTheme} style={titleStyle}>
         {title}

@@ -18,10 +18,11 @@ const CalendarButton: React.FC<HeaderButtonProps> = ({ onPress }) => {
 };
 
 interface DiaryHeaderProps extends HeaderProps {
+  date: Date;
   setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
-const DiaryHeader: React.FC<DiaryHeaderProps> = ({ title, setDate }) => {
+const DiaryHeader: React.FC<DiaryHeaderProps> = ({ title, date, setDate }) => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
 
   const handleDateConfirm = (selectedDate: Date) => {
@@ -37,7 +38,9 @@ const DiaryHeader: React.FC<DiaryHeaderProps> = ({ title, setDate }) => {
           <CalendarButton onPress={() => setDatePickerVisible(true)} />
           <DateTimePickerModal
             isVisible={datePickerVisible}
-            mode="date"
+            display="inline"
+            locale="ko"
+            date={date}
             maximumDate={new Date()}
             onConfirm={handleDateConfirm}
             onCancel={() => setDatePickerVisible(false)}

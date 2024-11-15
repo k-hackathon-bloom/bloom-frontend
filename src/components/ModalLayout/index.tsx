@@ -1,5 +1,11 @@
 import React from 'react';
-import { Modal, View, TouchableWithoutFeedback } from 'react-native';
+import {
+  Modal,
+  View,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
@@ -26,6 +32,7 @@ const ModalContainer = styled(View)`
 const ModalTitle = styled(StyledText)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.MEDIUM};
   font-size: ${responsive(16, 'height')}px;
+  margin-bottom: ${responsive(15, 'height')}px;
 `;
 
 const ModalDescription = styled(StyledText)`
@@ -33,19 +40,19 @@ const ModalDescription = styled(StyledText)`
   font-size: ${responsive(13, 'height')}px;
   letter-spacing: ${responsive(-0.5, 'height')}px;
   color: gray;
-  margin-top: ${responsive(5, 'height')}px;
+  margin-top: ${responsive(-10, 'height')}px;
+  margin-bottom: ${responsive(15, 'height')}px;
 `;
 
 const ModalContent = styled(View)`
   width: 88%;
   justify-content: center;
   align-items: center;
-  margin-top: ${responsive(15, 'height')}px;
 `;
 
 interface ModalProps {
   visible: boolean;
-  title: string;
+  title?: string;
   description?: string;
   content: React.ReactNode;
   onClose: () => void;
@@ -65,19 +72,24 @@ const ModalLayout: React.FC<ModalProps> = ({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <Overlay>
-          <TouchableWithoutFeedback>
-            <ModalContainer>
-              <ModalTitle>{title}</ModalTitle>
-              {description && (
-                <ModalDescription>{description}</ModalDescription>
-              )}
-              <ModalContent>{content}</ModalContent>
-            </ModalContainer>
-          </TouchableWithoutFeedback>
-        </Overlay>
-      </TouchableWithoutFeedback>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <TouchableWithoutFeedback onPress={onClose}>
+          <Overlay>
+            <TouchableWithoutFeedback>
+              <ModalContainer>
+                {title && <ModalTitle>{title}</ModalTitle>}
+                {description && (
+                  <ModalDescription>{description}</ModalDescription>
+                )}
+                <ModalContent>{content}</ModalContent>
+              </ModalContainer>
+            </TouchableWithoutFeedback>
+          </Overlay>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
       <Toast
         config={toastStyle}
         position="bottom"
