@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import ScreenLayout from '@screens/ScreenLayout';
@@ -10,7 +10,9 @@ import DoneListItem, {
   AddTaskButton,
 } from '@screens/Diary/components/DoneListItem';
 import ModalLayout from '@components/ModalLayout';
-import TaskModalContent from '@screens/Diary/components/TaskModal/TaskModalContent';
+import TaskModalContent, {
+  TaskModalContentHandles,
+} from '@screens/Diary/components/TaskModal/TaskModalContent';
 import apiClient from '@apis/client';
 import DoneTask from '@type/DoneTask';
 import SpacedView from '@components/common/SpacedView';
@@ -25,7 +27,9 @@ const Diary = () => {
   const [doneList, setDoneList] = useState<DoneTask[]>([]);
   const [taskModalVisible, setTaskModalVisible] = useState(false);
   const [selectedTask, setselectedTask] = useState(0);
+  const [isTaskModified, setIsTaskModified] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
+  const taskModalRef = useRef<TaskModalContentHandles>(null);
 
   const getLocalDateString = () => {
     const offset = date.getTimezoneOffset() * 60000;
@@ -97,6 +101,39 @@ const Diary = () => {
     ]);
   };
 
+  const saveTask = () => {
+    if (taskModalRef.current) {
+      taskModalRef.current.saveTask();
+    }
+  };
+
+  const handleTaskModalClose = () => {
+    if (isTaskModified) {
+      Alert.alert(
+        '변경 사항 저장',
+        '저장하지 않은 변경 사항이 있습니다.\n변경 사항을 저장하시겠습니까?',
+        [
+          {
+            text: '저장',
+            onPress: () => {
+              saveTask();
+              setTaskModalVisible(false);
+            },
+          },
+          {
+            text: '저장 안 함',
+            onPress: () => {
+              setTaskModalVisible(false);
+            },
+          },
+          { text: '취소', style: 'cancel' },
+        ],
+      );
+    } else {
+      setTaskModalVisible(false);
+    }
+  };
+
   useEffect(() => {
     fetchTasks();
   }, [date, fetchTasks]);
@@ -134,8 +171,15 @@ const Diary = () => {
       <ModalLayout
         title={getFormatedDate(date)}
         visible={taskModalVisible}
-        content={<TaskModalContent id={selectedTask} />}
-        onClose={() => setTaskModalVisible(false)}
+        content={
+          <TaskModalContent
+            ref={taskModalRef}
+            id={selectedTask}
+            fetchTasks={fetchTasks}
+            setIsTaskModified={setIsTaskModified}
+          />
+        }
+        onClose={handleTaskModalClose}
       />
     </ScreenLayout>
   );
