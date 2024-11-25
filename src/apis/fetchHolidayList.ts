@@ -24,7 +24,7 @@ const fetchHolidayList = async (year: string, month: string) => {
     const xmlDoc = parser.parseFromString(response.data, 'text/xml');
 
     return Array.from(xmlDoc.getElementsByTagName('locdate')).map((item: any) =>
-      parseInt(item.textContent.slice(-2)),
+      parseInt(item.textContent.slice(-2), 10),
     );
   } catch (error) {
     Toast.show({
