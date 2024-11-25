@@ -6,6 +6,8 @@ const theme = {
     TEXT_KAKAO: '#191600',
     TEXT_DAILY_QUESTION: '#5494DA',
     TEXT_DAILY_SAYING: '#7ADBC4',
+    TEXT_SATURDAY: '#558BCF',
+    TEXT_HOLIDAY: '#FF6F61',
     BUTTON_PRIMARY: '#5494DA',
     BUTTON_DISABLED: '#DFDFDF',
     BUTTON_KAKAO: '#FEE500',
@@ -20,6 +22,7 @@ const theme = {
     ITEM_SELECTED: '#E7F5FE',
     BOX_DAILY_QUESTION: '#E0EFFF',
     BOX_DAILY_SAYING: '#E6F7F3',
+    CELL_TODAY: '#E8F7FD',
   },
   FONT_WEIGHTS: {
     THIN: 'SpoqaHanSansNeo-Thin',
