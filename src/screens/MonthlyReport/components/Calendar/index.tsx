@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Animated } from 'react-native';
 import styled from 'styled-components/native';
+import { SvgUri } from 'react-native-svg';
+import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
 import ItemLayout from '@components/ItemLayout';
 import responsive from '@utils/responsive';
+import apiClient from '@apis/client';
 import fetchHolidayList from '@apis/fetchHolidayList';
 import theme from '@styles/theme';
 import BackIcon from '@assets/icons/back.svg';
@@ -78,7 +81,8 @@ const DatesWrapper = styled(View)`
 `;
 
 const FlowerIconWrapper = styled(View)`
-  height: ${responsive(25, 'height')}px;
+  height: ${responsive(30, 'height')}px;
+  justify-content: center;
 `;
 
 const DateText = styled(StyledText)<{ isToday: boolean; day: number }>`
@@ -87,78 +91,127 @@ const DateText = styled(StyledText)<{ isToday: boolean; day: number }>`
     props.isToday
       ? props.theme.FONT_WEIGHTS.BOLD
       : props.theme.FONT_WEIGHTS.REGULAR};
+  text-align: center;
 `;
+
+interface DailyAchievement {
+  date: string;
+  flowerIconUrl: string;
+}
 
 const Calendar = () => {
   const [currentYearMonth, setCurrentYearMonth] = useState(new Date());
-  const today = new Date();
-  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-  const currentYear = currentYearMonth.getFullYear();
-  const currentMonth = currentYearMonth.getMonth() + 1;
   const [holidays, setHolidays] = useState<number[]>([]);
   const [holidayCache, setHolidayCache] = useState<{ [key: string]: number[] }>(
     {},
   );
+  const [monthlyAchievement, setMonthlyAchievement] = useState<
+    DailyAchievement[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [iconScales, setIconScales] = useState<{
+    [key: string]: Animated.Value;
+  }>({});
+  const currentYear = currentYearMonth.getFullYear();
+  const currentMonth = currentYearMonth.getMonth() + 1;
+  const today = new Date();
+  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   useEffect(() => {
-    const loadHolidays = async () => {
-      const monthKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
-      let prevMonthKey: string, nextMonthKey: string;
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const monthKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
+        let prevMonthKey: string, nextMonthKey: string;
 
-      if (currentMonth === 1) {
-        prevMonthKey = `${currentYear - 1}-12`;
-      } else {
-        prevMonthKey = `${currentYear}-${String(currentMonth - 1).padStart(2, '0')}`;
-      }
+        if (currentMonth === 1) {
+          prevMonthKey = `${currentYear - 1}-12`;
+        } else {
+          prevMonthKey = `${currentYear}-${String(currentMonth - 1).padStart(2, '0')}`;
+        }
 
-      if (currentMonth === 12) {
-        nextMonthKey = `${currentYear + 1}-01`;
-      } else {
-        nextMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-      }
+        if (currentMonth === 12) {
+          nextMonthKey = `${currentYear + 1}-01`;
+        } else {
+          nextMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+        }
 
-      const currentMonthHolidays = holidayCache[monthKey];
+        const currentMonthHolidays = holidayCache[monthKey];
 
-      if (currentMonthHolidays) {
-        setHolidays(currentMonthHolidays);
-      } else {
-        const holidayListCurrentMonth = await fetchHolidayList(
-          currentYear.toString(),
-          currentMonth.toString().padStart(2, '0'),
+        if (!currentMonthHolidays) {
+          const holidayListCurrentMonth = await fetchHolidayList(
+            currentYear.toString(),
+            currentMonth.toString().padStart(2, '0'),
+          );
+
+          setHolidayCache((prevCache) => ({
+            ...prevCache,
+            [monthKey]: holidayListCurrentMonth || [],
+          }));
+          setHolidays(holidayListCurrentMonth || []);
+        } else {
+          setHolidays(currentMonthHolidays);
+        }
+
+        if (!holidayCache[prevMonthKey]) {
+          const holidayListPrevMonth = await fetchHolidayList(
+            prevMonthKey.split('-')[0],
+            prevMonthKey.split('-')[1],
+          );
+          setHolidayCache((prevCache) => ({
+            ...prevCache,
+            [prevMonthKey]: holidayListPrevMonth || [],
+          }));
+        }
+
+        if (!holidayCache[nextMonthKey]) {
+          const holidayListNextMonth = await fetchHolidayList(
+            nextMonthKey.split('-')[0],
+            nextMonthKey.split('-')[1],
+          );
+          setHolidayCache((prevCache) => ({
+            ...prevCache,
+            [nextMonthKey]: holidayListNextMonth || [],
+          }));
+        }
+
+        const response = await apiClient.get('/api/achievement/monthly', {
+          params: {
+            month: `${currentYear}-${String(currentMonth).padStart(2, '0')}`,
+          },
+        });
+
+        const monthlyAchievementFromServer = response.data.dailyData.map(
+          (item: { date: string; flowerIconUrl: string }) => ({
+            date: item.date,
+            flowerIconUrl: item.flowerIconUrl,
+          }),
         );
-
-        setHolidayCache((prevCache) => ({
-          ...prevCache,
-          [monthKey]: holidayListCurrentMonth || [],
-        }));
-        setHolidays(holidayListCurrentMonth || []);
-      }
-
-      if (!holidayCache[prevMonthKey]) {
-        const holidayListPrevMonth = await fetchHolidayList(
-          prevMonthKey.split('-')[0],
-          prevMonthKey.split('-')[1],
-        );
-        setHolidayCache((prevCache) => ({
-          ...prevCache,
-          [prevMonthKey]: holidayListPrevMonth || [],
-        }));
-      }
-
-      if (!holidayCache[nextMonthKey]) {
-        const holidayListNextMonth = await fetchHolidayList(
-          nextMonthKey.split('-')[0],
-          nextMonthKey.split('-')[1],
-        );
-        setHolidayCache((prevCache) => ({
-          ...prevCache,
-          [nextMonthKey]: holidayListNextMonth || [],
-        }));
+        setMonthlyAchievement(monthlyAchievementFromServer);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: '월간 리포트를 불러오는 데 실패했습니다.',
+          text2: String(error),
+        });
+        setMonthlyAchievement([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadHolidays();
+    loadData();
   }, [currentYear, currentMonth, holidayCache]);
+
+  useEffect(() => {
+    const scales: { [key: string]: Animated.Value } = {};
+    monthlyAchievement.forEach((item) => {
+      if (!scales[item.date]) {
+        scales[item.date] = new Animated.Value(0);
+      }
+    });
+    setIconScales(scales);
+  }, [monthlyAchievement]);
 
   const renderDates = () => {
     const datesInMonth = new Date(
@@ -198,6 +251,11 @@ const Calendar = () => {
 
       const isHoliday = holidays.includes(date);
       const dayOfWeek = getDay(date);
+      const dailyAchievement =
+        !isLoading &&
+        monthlyAchievement.find(
+          (item) => parseInt(item.date.split('-')[2], 10) === date,
+        );
 
       dates.push(
         <DayCell key={i} isToday={isCurrentMonth && isToday(date)}>
@@ -218,7 +276,39 @@ const Calendar = () => {
               >
                 {date}
               </DateText>
-              <FlowerIconWrapper />
+              <FlowerIconWrapper>
+                {!isLoading &&
+                  dailyAchievement &&
+                  dailyAchievement.flowerIconUrl && (
+                    <Animated.View
+                      style={{
+                        transform: [
+                          {
+                            scale:
+                              iconScales[dailyAchievement.date] ||
+                              new Animated.Value(0),
+                          },
+                        ],
+                      }}
+                    >
+                      <SvgUri
+                        key={dailyAchievement.date}
+                        uri={dailyAchievement.flowerIconUrl}
+                        width={responsive(15, 'height')}
+                        height={responsive(15, 'height')}
+                        onLoad={() => {
+                          if (iconScales[dailyAchievement.date]) {
+                            Animated.timing(iconScales[dailyAchievement.date], {
+                              toValue: 1,
+                              duration: 500,
+                              useNativeDriver: true,
+                            }).start();
+                          }
+                        }}
+                      />
+                    </Animated.View>
+                  )}
+              </FlowerIconWrapper>
             </View>
           )}
         </DayCell>,
