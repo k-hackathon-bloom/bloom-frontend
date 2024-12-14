@@ -10,6 +10,7 @@ import DoneListItem, {
   AddTaskButton,
 } from '@screens/Diary/components/DoneListItem';
 import ModalLayout from '@components/ModalLayout';
+import QuestionModalContent from '@screens/Diary/components/QuestionModal/QuestionModalContent';
 import TaskModalContent, {
   TaskModalContentHandles,
 } from '@screens/Diary/components/TaskModal/TaskModalContent';
@@ -20,13 +21,14 @@ import responsive from '@utils/responsive';
 
 const Diary = () => {
   const [date, setDate] = useState(new Date());
-  // eslint-disable-next-line
   const [question, setQuestion] = useState('');
-  // eslint-disable-next-line
+  const [answer, setAnswer] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [saying, setSaying] = useState('');
   const [doneList, setDoneList] = useState<DoneTask[]>([]);
+  const [questionModalVisible, setQuestionModalVisible] = useState(false);
   const [taskModalVisible, setTaskModalVisible] = useState(false);
-  const [selectedTask, setselectedTask] = useState(0);
+  const [selectedTask, setSelectedTask] = useState(0);
   const [isTaskModified, setIsTaskModified] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
   const taskModalRef = useRef<TaskModalContentHandles>(null);
@@ -38,6 +40,32 @@ const Diary = () => {
   };
 
   const localDate = getLocalDateString();
+
+  const fetchQuestion = useCallback(async () => {
+    try {
+      const response = await apiClient.get('/api/daily-question/answer', {
+        params: { date: localDate },
+      });
+      setQuestion(response.data.question);
+      setAnswer(response.data.answer);
+    } catch (error) {
+      setQuestion('');
+      setAnswer('');
+    }
+  }, [localDate]);
+
+  const registerQuestion = useCallback(async () => {
+    try {
+      await apiClient.get('/api/daily-question');
+      await fetchQuestion();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: '오늘의 질문을 등록하는 데 실패했습니다.',
+        text2: String(error),
+      });
+    }
+  }, [fetchQuestion]);
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -134,6 +162,27 @@ const Diary = () => {
     }
   };
 
+  const isToday = useCallback(() => {
+    const today = new Date();
+
+    return (
+      today.getFullYear() === date.getFullYear() &&
+      today.getMonth() === date.getMonth() &&
+      today.getDate() === date.getDate()
+    );
+  }, [date]);
+
+  useEffect(() => {
+    const updateQuestion = async () => {
+      if (isToday() && !question) {
+        await registerQuestion();
+      }
+      fetchQuestion();
+    };
+
+    updateQuestion();
+  }, [date, question, fetchQuestion, registerQuestion, isToday]);
+
   useEffect(() => {
     fetchTasks();
   }, [date, fetchTasks]);
@@ -149,7 +198,11 @@ const Diary = () => {
         showsVerticalScrollIndicator={false}
         scrollEnabled={!isSwiping}
       >
-        <DailyInspiration question={question} saying={saying} />
+        <DailyInspiration
+          question={question}
+          saying={saying}
+          handleOpenModal={() => question && setQuestionModalVisible(true)}
+        />
         <DoneListHeader />
         <SpacedView gap={responsive(8, 'height')}>
           {doneList.map((item) => (
@@ -158,7 +211,7 @@ const Diary = () => {
               id={item.id}
               title={item.title}
               handleOpenModal={() => {
-                setselectedTask(item.id);
+                setSelectedTask(item.id);
                 setTaskModalVisible(true);
               }}
               handleDeleteTask={handleDeleteTask}
@@ -169,7 +222,21 @@ const Diary = () => {
         </SpacedView>
       </ScrollView>
       <ModalLayout
-        title={getFormatedDate(date)}
+        title="오늘의 질문 답변"
+        visible={questionModalVisible}
+        content={
+          <QuestionModalContent
+            question={question}
+            answer={answer}
+            setAnswer={setAnswer}
+            editable={isToday()}
+          />
+        }
+        onClose={() => {
+          setQuestionModalVisible(false);
+        }}
+      />
+      <ModalLayout
         visible={taskModalVisible}
         content={
           <TaskModalContent
