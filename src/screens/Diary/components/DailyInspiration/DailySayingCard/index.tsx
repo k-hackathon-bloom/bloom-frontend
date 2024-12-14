@@ -1,17 +1,17 @@
 import React from 'react';
-import BoxLayout from '@screens/Diary/components/DailyInspiration/BoxLayout';
+import CardLayout from '@screens/Diary/components/DailyInspiration/CardLayout';
 import theme from '@styles/theme';
 
-const DailyQuestionBox = ({ content }: { content: string }) => {
+const DailySayingCard = ({ content }: { content: string }) => {
   return (
-    <BoxLayout
+    <CardLayout
       title="오늘의 명언"
       content={content || '오늘의 명언이 없습니다.'}
-      backgroundColor={theme.COLORS.BOX_DAILY_SAYING}
+      backgroundColor={theme.COLORS.CARD_DAILY_SAYING}
       textColor={theme.COLORS.TEXT_DAILY_SAYING}
       showWriteButton={false}
     />
   );
 };
 
-export default DailyQuestionBox;
+export default DailySayingCard;
