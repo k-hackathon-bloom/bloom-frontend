@@ -10,7 +10,9 @@ import DoneListItem, {
   AddTaskButton,
 } from '@screens/Diary/components/DoneListItem';
 import ModalLayout from '@components/ModalLayout';
-import QuestionModalContent from '@screens/Diary/components/QuestionModal/QuestionModalContent';
+import QuestionModalContent, {
+  QuestionModalContentHandles,
+} from '@screens/Diary/components/QuestionModal/QuestionModalContent';
 import TaskModalContent, {
   TaskModalContentHandles,
 } from '@screens/Diary/components/TaskModal/TaskModalContent';
@@ -23,6 +25,7 @@ const Diary = () => {
   const [date, setDate] = useState(new Date());
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
+  const [initialAnswer, setInitialAnswer] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [saying, setSaying] = useState('');
   const [doneList, setDoneList] = useState<DoneTask[]>([]);
@@ -31,6 +34,7 @@ const Diary = () => {
   const [selectedTask, setSelectedTask] = useState(0);
   const [isTaskModified, setIsTaskModified] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
+  const questionModalRef = useRef<QuestionModalContentHandles>(null);
   const taskModalRef = useRef<TaskModalContentHandles>(null);
 
   const getLocalDateString = () => {
@@ -48,9 +52,11 @@ const Diary = () => {
       });
       setQuestion(response.data.question);
       setAnswer(response.data.answer);
+      setInitialAnswer(response.data.answer);
     } catch (error) {
       setQuestion('');
       setAnswer('');
+      setInitialAnswer('');
     }
   }, [localDate]);
 
@@ -66,6 +72,39 @@ const Diary = () => {
       });
     }
   }, [fetchQuestion]);
+
+  const saveAnswer = () => {
+    if (questionModalRef.current) {
+      questionModalRef.current.saveAnswer();
+    }
+  };
+
+  const handleQuestionModalClose = () => {
+    if (initialAnswer !== answer) {
+      Alert.alert(
+        '변경 사항 저장',
+        '저장하지 않은 변경 사항이 있습니다.\n변경 사항을 저장하시겠습니까?',
+        [
+          {
+            text: '저장',
+            onPress: () => {
+              saveAnswer();
+              setQuestionModalVisible(false);
+            },
+          },
+          {
+            text: '저장 안 함',
+            onPress: () => {
+              setQuestionModalVisible(false);
+            },
+          },
+          { text: '취소', style: 'cancel' },
+        ],
+      );
+    } else {
+      setQuestionModalVisible(false);
+    }
+  };
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -201,7 +240,12 @@ const Diary = () => {
         <DailyInspiration
           question={question}
           saying={saying}
-          handleOpenModal={() => question && setQuestionModalVisible(true)}
+          handleOpenModal={() => {
+            if (question) {
+              fetchQuestion();
+              setQuestionModalVisible(true);
+            }
+          }}
         />
         <DoneListHeader />
         <SpacedView gap={responsive(8, 'height')}>
@@ -226,15 +270,15 @@ const Diary = () => {
         visible={questionModalVisible}
         content={
           <QuestionModalContent
+            ref={questionModalRef}
             question={question}
             answer={answer}
             setAnswer={setAnswer}
+            setInitialAnswer={setInitialAnswer}
             editable={isToday()}
           />
         }
-        onClose={() => {
-          setQuestionModalVisible(false);
-        }}
+        onClose={handleQuestionModalClose}
       />
       <ModalLayout
         visible={taskModalVisible}

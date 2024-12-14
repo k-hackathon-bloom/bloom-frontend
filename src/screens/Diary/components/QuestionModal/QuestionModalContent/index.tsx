@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { View, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import StyledButton from '@components/common/StyledButton';
@@ -42,22 +42,26 @@ const AnswerInput = styled(TextInput)`
   padding: 0 ${responsive(15)}px;
 `;
 
+export interface QuestionModalContentHandles {
+  saveAnswer: () => Promise<void>;
+}
+
 interface QuestionModalContentProps {
   question: string;
   answer: string;
   setAnswer: React.Dispatch<React.SetStateAction<string>>;
+  setInitialAnswer: React.Dispatch<React.SetStateAction<string>>;
   editable: boolean;
 }
 
-const QuestionModalContent: React.FC<QuestionModalContentProps> = ({
-  question,
-  answer,
-  setAnswer,
-  editable,
-}) => {
+const QuestionModalContent = forwardRef<
+  QuestionModalContentHandles,
+  QuestionModalContentProps
+>(({ question, answer, setAnswer, setInitialAnswer, editable }, ref) => {
   const handleSaveAnswer = async () => {
     try {
       await apiClient.put('/api/daily-question/answer', { answer });
+      setInitialAnswer(answer);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -66,6 +70,10 @@ const QuestionModalContent: React.FC<QuestionModalContentProps> = ({
       });
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    saveAnswer: handleSaveAnswer,
+  }));
 
   return (
     <ContentContainer>
@@ -85,6 +93,6 @@ const QuestionModalContent: React.FC<QuestionModalContentProps> = ({
       </SpacedView>
     </ContentContainer>
   );
-};
+});
 
 export default QuestionModalContent;
