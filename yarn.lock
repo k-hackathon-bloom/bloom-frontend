@@ -4147,6 +4147,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.2
     jest: ^29.6.3
     jest-transformer-svg: ^2.0.2
+    nanoid: ^5.0.9
     prettier: ^3.3.3
     react: 18.3.1
     react-native: 0.75.4
@@ -8820,6 +8821,15 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: d36c427e530713e4ac6567d488b489a36582ef89da1d6d4e3b87eded11eb10d7042a877958c6f104929809b2ab0bafa17652b076cdf84324aa75b30b722204f2
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^5.0.9":
+  version: 5.0.9
+  resolution: "nanoid@npm:5.0.9"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: 8a3f9104f81095e3e4785f58caae47a05755599824b8611b9730cbf73db706b664f100e6189f8303f08764f144d499613d8e4a39e83125c53f4b4986d6576621
   languageName: node
   linkType: hard
 

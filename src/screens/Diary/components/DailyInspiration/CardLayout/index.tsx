@@ -28,7 +28,7 @@ const ContentWrapper = styled(View)`
 const Content = styled(StyledText)`
   font-family: 'GowunDodum-Regular';
   font-size: ${responsive(18, 'height')}px;
-  letter-spacing: ${responsive(-1, 'height')}px;
+  letter-spacing: ${responsive(-1.2, 'height')}px;
   text-align: justify;
 `;
 
@@ -37,20 +37,22 @@ const WriteButton = styled(TouchableOpacity)`
   align-items: flex-end;
 `;
 
-interface BoxLayoutProps {
+interface CardLayoutProps {
   title: string;
   content: string;
   backgroundColor: string;
   textColor: string;
   showWriteButton?: boolean;
+  handleOpenModal?: () => void;
 }
 
-const BoxLayout: React.FC<BoxLayoutProps> = ({
+const CardLayout: React.FC<CardLayoutProps> = ({
   title,
   content,
   backgroundColor,
   textColor,
   showWriteButton = false,
+  handleOpenModal,
 }) => {
   return (
     <Container backgroundColor={backgroundColor}>
@@ -59,7 +61,7 @@ const BoxLayout: React.FC<BoxLayoutProps> = ({
         <Content>{content}</Content>
       </ContentWrapper>
       {showWriteButton && (
-        <WriteButton>
+        <WriteButton onPress={handleOpenModal}>
           <WriteIcon
             width={responsive(24, 'height')}
             height={responsive(24, 'height')}
@@ -70,4 +72,4 @@ const BoxLayout: React.FC<BoxLayoutProps> = ({
   );
 };
 
-export default BoxLayout;
+export default CardLayout;
