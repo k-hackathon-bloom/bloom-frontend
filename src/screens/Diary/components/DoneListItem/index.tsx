@@ -134,7 +134,9 @@ const DoneListItem: React.FC<DoneListItemProps> = ({
       />
       <DoneListContainer>
         <ButtonWrapper onPress={handleOpenModal}>
-          <DoneListTitle numberOfLines={1}>{title}</DoneListTitle>
+          <DoneListTitle numberOfLines={1}>
+            {title || '새로운 항목'}
+          </DoneListTitle>
         </ButtonWrapper>
       </DoneListContainer>
     </SwipeRow>
