@@ -31,9 +31,9 @@ const ContentContainer = styled(View)`
 `;
 
 const TaskTitle = styled(TextInput)`
+  font-family: 'GowunDodum-Regular';
   font-size: ${responsive(14, 'height')}px;
   padding: 0 ${responsive(15)}px;
-  margin-top: ${responsive(5, 'height')}px;
 `;
 
 const StyledScrollView = styled(ScrollView).attrs(() => ({
@@ -57,7 +57,7 @@ const TaskPhoto = styled(Image)`
 
 const TaskContent = styled(TextInput)`
   height: ${responsive(120, 'height')}px;
-  font-family: ${(props) => props.theme.FONT_WEIGHTS.LIGHT};
+  font-family: 'GowunDodum-Regular';
   font-size: ${responsive(14, 'height')}px;
   text-align: justify;
   text-align-vertical: top;
