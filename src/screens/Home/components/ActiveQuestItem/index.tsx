@@ -23,7 +23,7 @@ const QuestContainer = styled(ItemLayout)`
 
 const QuestTitle = styled(StyledText)`
   font-size: ${responsive(14, 'height')}px;
-  letter-spacing: ${responsive(-0.5)}px;
+  letter-spacing: ${responsive(-0.5, 'height')}px;
 `;
 
 const IconWrapper = styled(View)`
@@ -41,11 +41,21 @@ const DeleteButton = styled(TouchableOpacity)`
   justify-content: center;
 `;
 
+const StyledDeleteIcon = styled(DeleteIcon)`
+  position: absolute;
+  left: ${responsive(25, 'height')}px;
+`;
+
 const CompleteButton = styled(TouchableOpacity)`
   height: 100%;
   background-color: ${(props) => props.theme.COLORS.BUTTON_GREEN};
   align-items: center;
   justify-content: center;
+`;
+
+const StyledCompleteIcon = styled(CompleteIcon)`
+  position: absolute;
+  left: ${responsive(25, 'height')}px;
 `;
 
 const DisabledOverlay = styled(View)`
@@ -128,8 +138,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
     <QuestContainer>
       <Animated.View style={{ width: buttonWidth }}>
         <DeleteButton onPress={() => onDeleteQuest(questId)}>
-          <DeleteIcon
-            style={{ position: 'absolute', left: responsive(25, 'height') }}
+          <StyledDeleteIcon
             width={responsive(20, 'height')}
             height={responsive(20, 'height')}
           />
@@ -137,8 +146,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
       </Animated.View>
       <Animated.View style={{ width: buttonWidth }}>
         <CompleteButton onPress={() => onCompleteQuest(questId)}>
-          <CompleteIcon
-            style={{ position: 'absolute', left: responsive(25, 'height') }}
+          <StyledCompleteIcon
             width={responsive(20, 'height')}
             height={responsive(20, 'height')}
           />

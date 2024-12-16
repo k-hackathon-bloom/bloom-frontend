@@ -36,6 +36,13 @@ const TaskTitle = styled(TextInput)`
   margin-top: ${responsive(5, 'height')}px;
 `;
 
+const StyledScrollView = styled(ScrollView).attrs(() => ({
+  contentContainerStyle: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+}))``;
+
 const PhotoView = styled(View)`
   flex-direction: row;
   padding: 0 ${responsive(10)}px;
@@ -199,6 +206,7 @@ const TaskModalContent = forwardRef<
         }));
 
       taskData.deletedPhotoIds = deletedPhotoIds;
+      // @ts-expect-error
       photosToUpload.forEach((photo) => formData.append('files', photo));
     }
 
@@ -255,14 +263,7 @@ const TaskModalContent = forwardRef<
           maxLength={50}
         />
         {taskPhotos.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              flexGrow: 1,
-              justifyContent: 'center',
-            }}
-          >
+          <StyledScrollView horizontal showsHorizontalScrollIndicator={false}>
             <PhotoView>
               {taskPhotos.map((photo) => (
                 <TouchableOpacity
@@ -273,12 +274,12 @@ const TaskModalContent = forwardRef<
                 </TouchableOpacity>
               ))}
             </PhotoView>
-          </ScrollView>
+          </StyledScrollView>
         )}
         <TaskContent
           value={taskContent}
           onChangeText={setTaskContent}
-          placeholder="어떤 일을 하셨나요? (최대 500자)"
+          placeholder="어떤 일을 했었나요? (최대 500자)"
           maxLength={500}
           multiline
         />
