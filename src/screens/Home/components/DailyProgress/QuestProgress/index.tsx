@@ -6,13 +6,6 @@ import StyledText from '@components/common/StyledText';
 import responsive from '@utils/responsive';
 import theme from '@styles/theme';
 
-const QuestProgressContainer = styled(View)`
-  width: ${responsive(160)}px;
-  aspect-ratio: 1;
-`;
-
-const QuestProgressIndicator = styled(AnimatedCircularProgress)``;
-
 const TextContainer = styled(View)`
   align-items: center;
 `;
@@ -47,25 +40,23 @@ const QuestProgress: React.FC<QuestProgressProps> = ({
   }, [completedQuests, totalQuests]);
 
   return (
-    <QuestProgressContainer>
-      <QuestProgressIndicator
-        size={responsive(160)}
-        width={responsive(10)}
-        fill={progressPercentage}
-        tintColor={theme.COLORS.PROGRESS_BAR_PRIMARY}
-        backgroundColor={theme.COLORS.PROGRESS_BAR_BACKGROUND}
-        rotation={0}
-      >
-        {() => (
-          <TextContainer>
-            <Title>퀘스트 진행률</Title>
-            <ProgressText weight="MEDIUM">
-              {completedQuests} / {totalQuests}
-            </ProgressText>
-          </TextContainer>
-        )}
-      </QuestProgressIndicator>
-    </QuestProgressContainer>
+    <AnimatedCircularProgress
+      size={responsive(160)}
+      width={responsive(10)}
+      fill={progressPercentage}
+      tintColor={theme.COLORS.PROGRESS_BAR_PRIMARY}
+      backgroundColor={theme.COLORS.PROGRESS_BAR_BACKGROUND}
+      rotation={0}
+    >
+      {() => (
+        <TextContainer>
+          <Title>퀘스트 진행률</Title>
+          <ProgressText weight="MEDIUM">
+            {completedQuests} / {totalQuests}
+          </ProgressText>
+        </TextContainer>
+      )}
+    </AnimatedCircularProgress>
   );
 };
 

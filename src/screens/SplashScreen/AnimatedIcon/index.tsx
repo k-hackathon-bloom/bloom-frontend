@@ -6,8 +6,8 @@ import responsive from '@utils/responsive';
 import innerHtml from '@screens/SplashScreen/AnimatedIcon/innerHtml';
 
 const WebViewContainer = styled(View)`
-  width: ${responsive(110)}px;
-  height: ${responsive(155)}px;
+  width: ${responsive(110, 'height')}px;
+  height: ${responsive(155, 'height')}px;
 `;
 
 const StyledWebView = styled(WebView)`

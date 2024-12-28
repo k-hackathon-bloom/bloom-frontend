@@ -31,10 +31,17 @@ const ContentContainer = styled(View)`
 `;
 
 const TaskTitle = styled(TextInput)`
+  font-family: 'GowunDodum-Regular';
   font-size: ${responsive(14, 'height')}px;
   padding: 0 ${responsive(15)}px;
-  margin-top: ${responsive(5, 'height')}px;
 `;
+
+const StyledScrollView = styled(ScrollView).attrs(() => ({
+  contentContainerStyle: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+}))``;
 
 const PhotoView = styled(View)`
   flex-direction: row;
@@ -50,7 +57,7 @@ const TaskPhoto = styled(Image)`
 
 const TaskContent = styled(TextInput)`
   height: ${responsive(120, 'height')}px;
-  font-family: ${(props) => props.theme.FONT_WEIGHTS.LIGHT};
+  font-family: 'GowunDodum-Regular';
   font-size: ${responsive(14, 'height')}px;
   text-align: justify;
   text-align-vertical: top;
@@ -199,6 +206,7 @@ const TaskModalContent = forwardRef<
         }));
 
       taskData.deletedPhotoIds = deletedPhotoIds;
+      // @ts-expect-error
       photosToUpload.forEach((photo) => formData.append('files', photo));
     }
 
@@ -255,14 +263,7 @@ const TaskModalContent = forwardRef<
           maxLength={50}
         />
         {taskPhotos.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              flexGrow: 1,
-              justifyContent: 'center',
-            }}
-          >
+          <StyledScrollView horizontal showsHorizontalScrollIndicator={false}>
             <PhotoView>
               {taskPhotos.map((photo) => (
                 <TouchableOpacity
@@ -273,12 +274,12 @@ const TaskModalContent = forwardRef<
                 </TouchableOpacity>
               ))}
             </PhotoView>
-          </ScrollView>
+          </StyledScrollView>
         )}
         <TaskContent
           value={taskContent}
           onChangeText={setTaskContent}
-          placeholder="어떤 일을 하셨나요? (최대 500자)"
+          placeholder="어떤 일을 했었나요? (최대 500자)"
           maxLength={500}
           multiline
         />

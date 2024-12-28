@@ -45,7 +45,7 @@ const SplashScreen = () => {
   }, [netInfo.isInternetReachable, replaceTo, fetchUserData]);
 
   return (
-    <ScreenLayout backgroundColor="white" contentStyle={{ padding: 0 }}>
+    <ScreenLayout backgroundColor="white">
       <LogoContainer>
         <AnimatedIcon />
       </LogoContainer>

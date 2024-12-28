@@ -47,6 +47,21 @@ const HighlightedText = styled(StyledText)`
   letter-spacing: 0;
 `;
 
+const NoPaddingLayout = styled(ScreenLayout).attrs(() => ({
+  contentStyle: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+}))``;
+
+const StyledImageBackground = styled(ImageBackground)`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Slogan = () => {
   const { animatedValue: iconY, animateToValue: afterIconY } =
     useAnimatedValue(50);
@@ -132,28 +147,17 @@ const SocialLogin = () => {
 
   if (showWebView) {
     return (
-      <ScreenLayout
-        backgroundColor="white"
-        contentStyle={{
-          paddingLeft: 0,
-          paddingRight: 0,
-          paddingTop: 0,
-          paddingBottom: 0,
-        }}
-      >
+      <NoPaddingLayout backgroundColor="white">
         <SocialLoginWebView onTokenGenerated={onTokenGenerated} />
-      </ScreenLayout>
+      </NoPaddingLayout>
     );
   }
 
   return (
-    <ImageBackground
-      source={backgroundImage}
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-    >
+    <StyledImageBackground source={backgroundImage}>
       <Slogan />
       <LoginButton onPress={() => setShowWebView(true)} />
-    </ImageBackground>
+    </StyledImageBackground>
   );
 };
 

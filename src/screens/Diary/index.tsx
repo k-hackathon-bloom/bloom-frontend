@@ -128,7 +128,7 @@ const Diary = () => {
     const formData = new FormData();
     const newTask = {
       doneDate: localDate,
-      title: '새로운 작업',
+      title: '',
       content: '',
     };
     formData.append('data', JSON.stringify(newTask));

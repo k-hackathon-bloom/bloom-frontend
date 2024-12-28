@@ -28,7 +28,7 @@ const innerHtml = `
         position: relative;
         width: 64%;
         left: 18%;
-        top: ${responsive(19)}px;
+        top: ${responsive(19, 'height')}px;
         z-index: 2;
       }
       
@@ -36,7 +36,7 @@ const innerHtml = `
         position: relative;
         width: 84%;
         left: 8%;
-        top: ${responsive(45)}px;
+        top: ${responsive(45, 'height')}px;
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
       }

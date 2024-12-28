@@ -12,6 +12,10 @@ import StyledText from '@components/common/StyledText';
 import responsive from '@utils/responsive';
 import toastStyle from '@styles/toastStyle';
 
+const KeyboardAvoidingContainer = styled(KeyboardAvoidingView)`
+  flex: 1;
+`;
+
 const Overlay = styled(View)`
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
@@ -72,8 +76,7 @@ const ModalLayout: React.FC<ModalProps> = ({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
+      <KeyboardAvoidingContainer
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <TouchableWithoutFeedback onPress={onClose}>
@@ -89,7 +92,7 @@ const ModalLayout: React.FC<ModalProps> = ({
             </TouchableWithoutFeedback>
           </Overlay>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      </KeyboardAvoidingContainer>
       <Toast
         config={toastStyle}
         position="bottom"

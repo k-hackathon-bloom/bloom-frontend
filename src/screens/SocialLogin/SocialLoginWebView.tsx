@@ -27,6 +27,11 @@ const CenteredView = styled(View)`
   justify-content: center;
 `;
 
+const StyledWebView = styled(WebView)`
+  flex: 1;
+  width: 100%;
+`;
+
 const LoadingIndicator = () => (
   <CenteredView>
     <ActivityIndicator size="large" color="#999999" />
@@ -57,8 +62,7 @@ const SocialLoginWebView: React.FC<SocialLoginWebViewProps> = ({
     <LoadingIndicator />
   ) : (
     <CenteredView>
-      <WebView
-        style={{ flex: 1, width: '100%' }}
+      <StyledWebView
         incognito={true}
         source={{ uri: fetchedUri }}
         onShouldStartLoadWithRequest={handleNavigation}

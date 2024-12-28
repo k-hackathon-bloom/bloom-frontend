@@ -104,7 +104,10 @@ const BloomProgress: React.FC<BloomProgressProps> = ({ exp }) => {
           />
         </FlowerIconWrapper>
         <ProgressBar>
-          <Animated.View style={{ right: progressRight, flex: 1 }}>
+          <Animated.View
+            // eslint-disable-next-line react-native/no-inline-styles
+            style={{ right: progressRight, flex: 1 }}
+          >
             <CurrentProgress
               colors={[
                 theme.COLORS.PROGRESS_BAR_SECONDARY,

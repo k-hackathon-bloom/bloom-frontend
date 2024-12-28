@@ -39,6 +39,11 @@ const DeleteTaskButton = styled(TouchableOpacity)`
   justify-content: center;
 `;
 
+const StyledDeleteIcon = styled(DeleteIcon)`
+  position: absolute;
+  left: ${responsive(20, 'height')}px;
+`;
+
 const HiddenItemContainer = styled(DoneListContainer)`
   padding: 0;
 `;
@@ -72,8 +77,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
     <HiddenItemContainer>
       <Animated.View style={{ width: buttonWidth }}>
         <DeleteTaskButton onPress={() => onDeleteTask(taskId)}>
-          <DeleteIcon
-            style={{ position: 'absolute', left: responsive(20, 'height') }}
+          <StyledDeleteIcon
             width={responsive(15, 'height')}
             height={responsive(15, 'height')}
           />
@@ -130,7 +134,9 @@ const DoneListItem: React.FC<DoneListItemProps> = ({
       />
       <DoneListContainer>
         <ButtonWrapper onPress={handleOpenModal}>
-          <DoneListTitle numberOfLines={1}>{title}</DoneListTitle>
+          <DoneListTitle numberOfLines={1}>
+            {title || '새로운 항목'}
+          </DoneListTitle>
         </ButtonWrapper>
       </DoneListContainer>
     </SwipeRow>
