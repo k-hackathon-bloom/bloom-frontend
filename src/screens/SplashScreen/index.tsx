@@ -30,10 +30,14 @@ const SplashScreen = () => {
         return;
       }
 
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        await fetchUserData();
-        replaceTo('Main');
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      if (accessToken) {
+        try {
+          await fetchUserData();
+          replaceTo('Main');
+        } catch (error) {
+          replaceTo('Login');
+        }
       } else {
         replaceTo('Login');
       }

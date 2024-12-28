@@ -19,7 +19,7 @@ const getQueryParams = (url: string): Record<string, string> => {
 };
 
 interface SocialLoginWebViewProps {
-  onTokenGenerated: (token: string) => void;
+  onTokenGenerated: (accessToken: string, refreshToken: string) => void;
 }
 
 const CenteredView = styled(View)`
