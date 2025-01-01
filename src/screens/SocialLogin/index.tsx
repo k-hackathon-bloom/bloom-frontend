@@ -131,9 +131,15 @@ const SocialLogin = () => {
   const { navigateTo } = useNavigate();
   const { fetchUserData } = useFetchUserData();
 
-  const onTokenGenerated = async (token: string) => {
+  const onTokenGenerated = async (
+    accessToken: string,
+    refreshToken: string,
+  ) => {
     try {
-      await AsyncStorage.setItem('authToken', token);
+      await AsyncStorage.multiSet([
+        ['accessToken', accessToken],
+        ['refreshToken', refreshToken],
+      ]);
     } catch (error) {
       Toast.show({
         type: 'error',

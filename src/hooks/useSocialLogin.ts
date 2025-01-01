@@ -4,9 +4,12 @@ import apiClient from '@apis/client';
 
 interface SocialLoginResponse {
   accessToken: string;
+  refreshToken: string;
 }
 
-const useSocialLogin = (onTokenGenerated: (token: string) => void) => {
+const useSocialLogin = (
+  onTokenGenerated: (accessToken: string, refreshToken: string) => void,
+) => {
   const [fetchedUri, setFetchedUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -36,7 +39,7 @@ const useSocialLogin = (onTokenGenerated: (token: string) => void) => {
         '/api/auth/kakao',
         { authorizationCode: code },
       );
-      onTokenGenerated(response.data.accessToken);
+      onTokenGenerated(response.data.accessToken, response.data.refreshToken);
     } catch (error) {
       Toast.show({
         type: 'error',

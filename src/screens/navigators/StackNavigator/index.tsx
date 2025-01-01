@@ -5,10 +5,14 @@ import SplashScreen from '@screens/SplashScreen';
 import SocialLogin from '@screens/SocialLogin';
 import BottomTabNavigator from '@screens/navigators/BottomTabNavigator';
 import UserSettings from '@screens/UserSettings';
+import useAxiosInterceptor from '@hooks/useAxiosInterceptor';
+import apiClient from '@apis/client';
 
 const Stack = createStackNavigator<StackParamList>();
 
 const StackNavigator = () => {
+  useAxiosInterceptor(apiClient);
+
   return (
     <Stack.Navigator
       initialRouteName="Splash"
