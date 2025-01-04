@@ -26,7 +26,7 @@ const useAxiosInterceptor = (instance: AxiosInstance) => {
       const newConfig = { ...config };
 
       if (accessToken && newConfig.headers) {
-        newConfig.headers.Authorization = `${accessToken}`;
+        newConfig.headers.Authorization = accessToken;
       }
 
       return newConfig;
