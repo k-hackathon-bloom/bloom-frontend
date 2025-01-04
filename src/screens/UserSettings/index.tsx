@@ -4,21 +4,29 @@ import ScreenLayout from '@screens/ScreenLayout';
 import UserSettingsHeader from '@screens/UserSettings/components/UserSettingsHeader';
 import SettingsItem from '@screens/UserSettings/components/SettingsItem';
 import useNavigate from '@hooks/useNavigate';
-import { ScrollView } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 
 const UserSettings = () => {
   const { navigateTo } = useNavigate();
 
-  const logout = async () => {
-    await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
-    navigateTo('Login');
+  const handleLogout = () => {
+    Alert.alert('bloom', '이 기기에서 로그아웃하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '로그아웃',
+        onPress: async () => {
+          await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+          navigateTo('Login');
+        },
+      },
+    ]);
   };
 
   return (
     <ScreenLayout>
       <UserSettingsHeader title="설정" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <SettingsItem title="로그아웃" onPress={logout} isLast={true} />
+        <SettingsItem title="로그아웃" onPress={handleLogout} isLast={true} />
       </ScrollView>
     </ScreenLayout>
   );
