@@ -29,13 +29,13 @@ const commonStyle = {
     fontFamily: theme.FONT_WEIGHTS.REGULAR,
     fontWeight: undefined,
     fontSize: responsive(14, 'height'),
-    color: theme.COLORS.TEXT_DEFAULT,
+    color: theme.COLORS.TEXT_PRIMARY,
   },
   text2Style: {
     fontFamily: theme.FONT_WEIGHTS.LIGHT,
     fontWeight: undefined,
     fontSize: responsive(11, 'height'),
-    color: theme.COLORS.TEXT_DEFAULT,
+    color: theme.COLORS.TEXT_PRIMARY,
   },
 };
 
