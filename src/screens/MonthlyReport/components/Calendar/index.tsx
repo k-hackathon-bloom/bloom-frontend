@@ -72,7 +72,7 @@ const WeekDayText = styled(StyledText)<{ weekDay: string }>`
       ? theme.COLORS.TEXT_SATURDAY
       : props.weekDay === '일'
         ? theme.COLORS.TEXT_HOLIDAY
-        : theme.COLORS.TEXT_DEFAULT};
+        : theme.COLORS.TEXT_PRIMARY};
 `;
 
 const DatesWrapper = styled(View)`
@@ -271,7 +271,7 @@ const Calendar = () => {
                       ? theme.COLORS.TEXT_HOLIDAY
                       : dayOfWeek === 6
                         ? theme.COLORS.TEXT_SATURDAY
-                        : theme.COLORS.TEXT_DEFAULT,
+                        : theme.COLORS.TEXT_PRIMARY,
                 }}
               >
                 {date}

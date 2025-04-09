@@ -27,6 +27,8 @@ module.exports = {
     ],
     'react/require-default-props': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
   settings: {
     'import/parsers': {
