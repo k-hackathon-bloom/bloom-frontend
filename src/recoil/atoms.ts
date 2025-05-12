@@ -20,3 +20,11 @@ export const questsAtom = atom<Quest[]>({
   key: 'questsAtom',
   default: [],
 });
+
+export const messageFormAtom = atom<{ title: string; content: string }>({
+  key: 'messageFormAtom',
+  default: {
+    title: '',
+    content: '',
+  },
+});
