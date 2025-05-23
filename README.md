@@ -4,6 +4,8 @@
    </h2>
 </div>
 
+https://github.com/user-attachments/assets/7c5d1fee-0301-4d2c-a156-702709fee2a2
+
 <div align="center">
    <h3>
       기술 스택 (FE)
