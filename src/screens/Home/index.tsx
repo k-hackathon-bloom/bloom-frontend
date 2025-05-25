@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { useRecoilState } from 'recoil';
 import ScreenLayout from '@screens/ScreenLayout';
-import { questsAtom, expAtom } from '@recoil/atoms';
 import Toast from 'react-native-toast-message';
 import HomeHeader from '@screens/Home/components/HomeHeader';
 import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
@@ -10,69 +8,38 @@ import DailyProgress from '@screens/Home/components/DailyProgress';
 import apiClient from '@apis/client';
 import Quest from '@type/Quest';
 import useUserDataQuery from '@hooks/useUserDataQuery';
+import useRegisteredQuestsQuery from '@hooks/useRegisteredQuestsQuery';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
 import ActiveQuestItem from '@screens/Home/components/ActiveQuestItem';
 
+const fetchAllQuests = async (): Promise<Quest[]> => {
+  const response = await apiClient.get('/api/quests/available');
+  return response.data.quests.map((quest: Quest) => ({
+    id: quest.id,
+    iconUrl: quest.iconUrl,
+    title: quest.title,
+  }));
+};
+
 const Home = () => {
   const { data: userData } = useUserDataQuery();
+  const {
+    data: registeredQuests = [],
+    refetch: refetchRegisteredQuests,
+    isSuccess,
+  } = useRegisteredQuestsQuery();
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
-  const [registeredQuests, setRegisteredQuests] =
-    useRecoilState<Quest[]>(questsAtom);
-  const [exp, setExp] = useRecoilState<number>(expAtom);
   const [questModalVisible, setQuestModalVisible] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
-
-  const fetchAllQuests = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/quests/available');
-      const questsFromServer = response.data.quests.map((quest: Quest) => ({
-        id: quest.id,
-        iconUrl: quest.iconUrl,
-        title: quest.title,
-      }));
-      setAllQuests(questsFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, []);
-
-  const fetchRegisteredQuests = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/quests/registered');
-      const registeredQuestsFromServer = response.data.quests.map(
-        (quest: Quest) => ({
-          id: quest.id,
-          iconUrl: quest.iconUrl,
-          title: quest.title,
-          maxCount: quest.maxCount,
-          isDone: quest.isDone,
-        }),
-      );
-      if (registeredQuestsFromServer.length < 3) {
-        setQuestModalVisible(true);
-        return;
-      }
-      setRegisteredQuests(registeredQuestsFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '등록한 퀘스트를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, [setRegisteredQuests]);
+  const [exp, setExp] = useState(0);
 
   const handleDeleteQuest = async (questId: number) => {
     if (registeredQuests.length > 3) {
       try {
         await apiClient.delete(`/api/quests/${questId}`);
-        await fetchRegisteredQuests();
+        await refetchRegisteredQuests();
       } catch (error) {
         Toast.show({
           type: 'error',
@@ -105,7 +72,7 @@ const Home = () => {
         );
       }
 
-      await fetchRegisteredQuests();
+      await refetchRegisteredQuests();
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -118,8 +85,8 @@ const Home = () => {
   const handleCompleteQuest = async (questId: number) => {
     try {
       await apiClient.patch(`/api/quests/${questId}/complete`);
-      await fetchRegisteredQuests();
-      setExp(exp + 1);
+      await refetchRegisteredQuests();
+      setExp((prev) => prev + 1);
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -130,9 +97,27 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchAllQuests();
-    fetchRegisteredQuests();
-  }, [fetchAllQuests, fetchRegisteredQuests]);
+    const loadAllQuests = async () => {
+      try {
+        const quests = await fetchAllQuests();
+        setAllQuests(quests);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
+          text2: String(error),
+        });
+      }
+    };
+
+    loadAllQuests();
+  }, []);
+
+  useEffect(() => {
+    if (isSuccess && registeredQuests.length < 3) {
+      setQuestModalVisible(true);
+    }
+  }, [isSuccess, registeredQuests]);
 
   return (
     <ScreenLayout>
@@ -168,9 +153,7 @@ const Home = () => {
           <QuestModalContent
             quests={allQuests}
             setModalVisible={setQuestModalVisible}
-            registeredQuestIds={registeredQuests.map(
-              (quest: Quest) => quest.id,
-            )}
+            registeredQuestIds={registeredQuests.map((quest) => quest.id)}
             completedQuestIds={
               registeredQuests.length > 0
                 ? registeredQuests

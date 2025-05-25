@@ -4,7 +4,8 @@ import styled from 'styled-components/native';
 import BloomProgress from '@screens/Home/components/DailyProgress/BloomProgress';
 import QuestProgress from '@screens/Home/components/DailyProgress/QuestProgress';
 import { useRecoilValue } from 'recoil';
-import { expAtom, questsAtom } from '@recoil/atoms';
+import { expAtom } from '@recoil/atoms';
+import useRegisteredQuestsQuery from '@hooks/useRegisteredQuestsQuery';
 import Quest from '@type/Quest';
 
 const DailyProgressContainer = styled(View)`
@@ -14,7 +15,8 @@ const DailyProgressContainer = styled(View)`
 
 const DailyProgress = () => {
   const exp = useRecoilValue(expAtom);
-  const quests = useRecoilValue(questsAtom);
+  const { data: quests = [] } = useRegisteredQuestsQuery();
+
   const totalQuests = quests.length;
   const completedQuests = quests.filter((quest: Quest) => quest.isDone).length;
 
