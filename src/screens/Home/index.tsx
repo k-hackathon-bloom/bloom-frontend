@@ -9,6 +9,11 @@ import apiClient from '@apis/client';
 import Quest from '@type/Quest';
 import useUserDataQuery from '@hooks/useUserDataQuery';
 import useRegisteredQuestsQuery from '@hooks/useRegisteredQuestsQuery';
+import {
+  useDeleteQuestMutation,
+  useCompleteQuestMutation,
+  useUpdateQuestsMutation,
+} from '@hooks/useQuestMutation';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
@@ -25,11 +30,12 @@ const fetchAllQuests = async (): Promise<Quest[]> => {
 
 const Home = () => {
   const { data: userData } = useUserDataQuery();
-  const {
-    data: registeredQuests = [],
-    refetch: refetchRegisteredQuests,
-    isSuccess,
-  } = useRegisteredQuestsQuery();
+  const { data: registeredQuests = [], isSuccess } = useRegisteredQuestsQuery();
+
+  const deleteQuestMutation = useDeleteQuestMutation();
+  const completeQuestMutation = useCompleteQuestMutation();
+  const updateQuestsMutation = useUpdateQuestsMutation();
+
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [questModalVisible, setQuestModalVisible] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -37,16 +43,7 @@ const Home = () => {
 
   const handleDeleteQuest = async (questId: number) => {
     if (registeredQuests.length > 3) {
-      try {
-        await apiClient.delete(`/api/quests/${questId}`);
-        await refetchRegisteredQuests();
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '퀘스트를 삭제하는 데 실패했습니다.',
-          text2: String(error),
-        });
-      }
+      deleteQuestMutation.mutate(questId);
     } else {
       Toast.show({
         type: 'info',
@@ -59,41 +56,18 @@ const Home = () => {
     questIdsToAdd: number[],
     questIdsToRemove: number[],
   ) => {
-    try {
-      if (questIdsToAdd.length > 0) {
-        await apiClient.post('/api/quests', { questIds: questIdsToAdd });
-      }
-
-      if (questIdsToRemove.length > 0) {
-        await Promise.all(
-          questIdsToRemove.map((questId) =>
-            apiClient.delete(`/api/quests/${questId}`),
-          ),
-        );
-      }
-
-      await refetchRegisteredQuests();
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트 업데이트에 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    updateQuestsMutation.mutate({
+      questIdsToAdd,
+      questIdsToRemove,
+    });
   };
 
   const handleCompleteQuest = async (questId: number) => {
-    try {
-      await apiClient.patch(`/api/quests/${questId}/complete`);
-      await refetchRegisteredQuests();
-      setExp((prev) => prev + 1);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트를 완료하는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    completeQuestMutation.mutate(questId, {
+      onSuccess: () => {
+        setExp((prev) => prev + 1);
+      },
+    });
   };
 
   useEffect(() => {
