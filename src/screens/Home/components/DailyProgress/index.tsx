@@ -5,7 +5,7 @@ import BloomProgress from '@screens/Home/components/DailyProgress/BloomProgress'
 import QuestProgress from '@screens/Home/components/DailyProgress/QuestProgress';
 import { useRecoilValue } from 'recoil';
 import { expAtom } from '@recoil/atoms';
-import useRegisteredQuestsQuery from '@hooks/useRegisteredQuestsQuery';
+import useRegisteredQuestsQuery from '@hooks/queries/useRegisteredQuestsQuery';
 import Quest from '@type/Quest';
 
 const DailyProgressContainer = styled(View)`

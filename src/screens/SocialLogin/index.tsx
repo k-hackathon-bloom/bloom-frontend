@@ -12,7 +12,7 @@ import theme from '@styles/theme';
 import KakaoIcon from '@assets/icons/kakao.svg';
 import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
-import useUserDataQuery from '@hooks/useUserDataQuery';
+import useUserDataQuery from '@hooks/queries/useUserDataQuery';
 import useAnimatedValue from '@hooks/useAnimatedValue';
 import useNavigate from '@hooks/useNavigate';
 

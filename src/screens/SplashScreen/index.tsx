@@ -6,7 +6,7 @@ import Toast from 'react-native-toast-message';
 import { useNetInfo } from '@react-native-community/netinfo';
 import ScreenLayout from '@screens/ScreenLayout';
 import AnimatedIcon from '@screens/SplashScreen/AnimatedIcon';
-import useUserDataQuery from '@hooks/useUserDataQuery';
+import useUserDataQuery from '@hooks/queries/useUserDataQuery';
 import useNavigate from '@hooks/useNavigate';
 
 const LogoContainer = styled(View)`
