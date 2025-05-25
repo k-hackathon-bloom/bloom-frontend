@@ -13,7 +13,7 @@ import {
   useDeleteQuestMutation,
   useCompleteQuestMutation,
   useUpdateQuestsMutation,
-} from '@hooks/mutations/useQuestMutation';
+} from '@hooks/mutations/questMutations';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
