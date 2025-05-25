@@ -12,9 +12,9 @@ import theme from '@styles/theme';
 import KakaoIcon from '@assets/icons/kakao.svg';
 import backgroundImage from '@assets/backgrounds/login.jpg';
 import appIcon from '@assets/icon-512.png';
+import useUserDataQuery from '@hooks/useUserDataQuery';
 import useAnimatedValue from '@hooks/useAnimatedValue';
 import useNavigate from '@hooks/useNavigate';
-import useFetchUserData from '@hooks/useFetchUserData';
 
 const SloganContainer = styled(View)`
   position: absolute;
@@ -129,7 +129,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
 const SocialLogin = () => {
   const [showWebView, setShowWebView] = useState(false);
   const { navigateTo } = useNavigate();
-  const { fetchUserData } = useFetchUserData();
+  const { refetch: refetchUserData } = useUserDataQuery();
 
   const onTokenGenerated = async (
     accessToken: string,
@@ -140,15 +140,18 @@ const SocialLogin = () => {
         ['accessToken', accessToken],
         ['refreshToken', refreshToken],
       ]);
+
+      const { error } = await refetchUserData();
+      if (error) throw error;
+
+      navigateTo('Main');
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: '토큰을 저장하지 못했습니다.',
+        text1: '로그인 실패',
         text2: String(error),
       });
     }
-    await fetchUserData();
-    navigateTo('Main');
   };
 
   if (showWebView) {

@@ -1,21 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import ScreenLayout from '@screens/ScreenLayout';
-import { questsAtom, userDataAtom, expAtom } from '@recoil/atoms';
+import { questsAtom, expAtom } from '@recoil/atoms';
 import Toast from 'react-native-toast-message';
 import HomeHeader from '@screens/Home/components/HomeHeader';
 import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
 import DailyProgress from '@screens/Home/components/DailyProgress';
 import apiClient from '@apis/client';
 import Quest from '@type/Quest';
+import useUserDataQuery from '@hooks/useUserDataQuery';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
 import ActiveQuestItem from '@screens/Home/components/ActiveQuestItem';
 
 const Home = () => {
-  const userData = useRecoilValue(userDataAtom);
+  const { data: userData } = useUserDataQuery();
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [registeredQuests, setRegisteredQuests] =
     useRecoilState<Quest[]>(questsAtom);
@@ -135,7 +136,7 @@ const Home = () => {
 
   return (
     <ScreenLayout>
-      <HomeHeader title={`${userData.nickname}님 안녕하세요!`} />
+      <HomeHeader title={`${userData?.nickname}님 안녕하세요!`} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         scrollEnabled={!isSwiping}
