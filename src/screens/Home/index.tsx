@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import ScreenLayout from '@screens/ScreenLayout';
 import Toast from 'react-native-toast-message';
-import HomeHeader from '@screens/Home/components/HomeHeader';
-import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
-import DailyProgress from '@screens/Home/components/DailyProgress';
-import apiClient from '@apis/client';
-import Quest from '@type/Quest';
 import useUserDataQuery from '@hooks/queries/useUserDataQuery';
 import useRegisteredQuestsQuery from '@hooks/queries/useRegisteredQuestsQuery';
 import {
@@ -14,6 +9,11 @@ import {
   useCompleteQuestMutation,
   useUpdateQuestsMutation,
 } from '@hooks/mutations/questMutations';
+import HomeHeader from '@screens/Home/components/HomeHeader';
+import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
+import DailyProgress from '@screens/Home/components/DailyProgress';
+import apiClient from '@apis/client';
+import Quest from '@type/Quest';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
@@ -39,7 +39,7 @@ const Home = () => {
   const [allQuests, setAllQuests] = useState<Quest[]>([]);
   const [questModalVisible, setQuestModalVisible] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
-  const [exp, setExp] = useState(0);
+  const [, setExp] = useState(0);
 
   const handleDeleteQuest = async (questId: number) => {
     if (registeredQuests.length > 3) {
