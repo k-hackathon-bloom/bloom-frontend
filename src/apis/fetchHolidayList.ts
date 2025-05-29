@@ -1,5 +1,5 @@
 import Toast from 'react-native-toast-message';
-import { DOMParser } from 'xmldom';
+import { DOMParser } from '@xmldom/xmldom';
 import apiClient from '@apis/client';
 import { HOLIDAY_API_KEY } from '@env';
 
