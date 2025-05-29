@@ -22,7 +22,8 @@ const SwitchContainer = styled(View)`
 `;
 
 const SwitchButton = styled(StyledText)<{ isActive: boolean }>`
-  color: ${(props) => (props.isActive ? '#1F1F1F' : '#bbb')};
+  color: ${(props) =>
+    props.isActive ? props.theme.COLORS.TEXT_PRIMARY : '#bbb'};
   font-size: 16px;
   letter-spacing: -0.5px;
 `;
@@ -105,6 +106,8 @@ const BottleMessage = () => {
 
   const handleSendMessage = useCallback(
     async (title: string, content: string, postcardId: number) => {
+      setNewMessageSheetStep(0);
+      setNewMessageSheetVisible(false);
       try {
         await apiClient.post('/api/bottle-messages', {
           title,
@@ -116,8 +119,6 @@ const BottleMessage = () => {
           text1: '메시지를 성공적으로 보냈습니다.',
         });
         fetchSentBottleMessages();
-        setNewMessageSheetStep(0);
-        setNewMessageSheetVisible(false);
       } catch (error) {
         Toast.show({
           type: 'error',
