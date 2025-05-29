@@ -71,7 +71,7 @@ export const MessageItemCard: React.FC<MessageItemProps> = ({
     <TouchableOpacity onPress={() => onPress(message)}>
       <MessageItemContainer>
         <View>
-          <Title>{message.title}</Title>
+          <Title numberOfLines={1}>{message.title}</Title>
           <Timestamp>{getTimeAgo(message.timestamp)}</Timestamp>
         </View>
       </MessageItemContainer>
