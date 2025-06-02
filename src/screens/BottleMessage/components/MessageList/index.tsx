@@ -25,8 +25,13 @@ const Title = styled(StyledText)`
   letter-spacing: -0.5px;
 `;
 
-const Timestamp = styled(StyledText)`
-  color: ${(props) => props.theme.COLORS.TEXT_SECONDARY};
+const MessageStatus = styled(StyledText)<{
+  negativity?: 'LOWER' | 'MIDDLE' | 'UPPER';
+}>`
+  color: ${(props) =>
+    props.negativity === 'MIDDLE' || props.negativity === 'UPPER'
+      ? props.theme.COLORS.TEXT_HOLIDAY
+      : props.theme.COLORS.TEXT_SECONDARY};
   font-size: 12px;
   margin-top: 4px;
 `;
@@ -67,12 +72,23 @@ export const MessageItemCard: React.FC<MessageItemProps> = ({
     }
   };
 
+  const getMessageStatus = (msg: Message) => {
+    if (!msg.negativity) {
+      return '분석 중';
+    } else if (msg.negativity === 'MIDDLE' || msg.negativity === 'UPPER') {
+      return '전송 실패';
+    }
+    return getTimeAgo(msg.timestamp);
+  };
+
   return (
     <TouchableOpacity onPress={() => onPress(message)}>
       <MessageItemContainer>
         <View>
           <Title numberOfLines={1}>{message.title}</Title>
-          <Timestamp>{getTimeAgo(message.timestamp)}</Timestamp>
+          <MessageStatus negativity={message.negativity}>
+            {getMessageStatus(message)}
+          </MessageStatus>
         </View>
       </MessageItemContainer>
     </TouchableOpacity>
