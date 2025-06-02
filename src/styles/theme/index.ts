@@ -35,3 +35,4 @@ const theme = {
 };
 
 export default theme;
+export type BloomTheme = typeof theme;
