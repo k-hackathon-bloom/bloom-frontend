@@ -1,46 +1,124 @@
-import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
+import { TouchableOpacity, Animated } from 'react-native';
+import { SwipeRow } from 'react-native-swipe-list-view';
 import styled from 'styled-components/native';
-import StyledText from '@components/common/StyledText';
 import { Message } from '@type/Message';
+import useAnimatedValue from '@hooks/useAnimatedValue';
+import StyledText from '@components/common/StyledText';
+import ItemLayout from '@components/ItemLayout';
 import SpacedView from '@components/common/SpacedView';
+import RemoveIcon from '@assets/icons/remove.svg';
 
-interface MessageItemProps {
-  message: Message;
-  onPress: (message: Message) => void;
-}
-
-const MessageItemContainer = styled(View)`
-  background-color: white;
-  border-radius: 8px;
-  padding: 0 20px;
-  height: 72px;
+const MessageItemContainer = styled(ItemLayout)`
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start;
+  height: 72px;
+  padding: 0 20px;
   overflow: hidden;
 `;
 
-const Title = styled(StyledText)`
+const ButtonWrapper = styled(TouchableOpacity)`
+  flex: 1;
+`;
+
+const MessageTitle = styled(StyledText)`
   letter-spacing: -0.5px;
 `;
 
 const MessageStatus = styled(StyledText)<{
-  negativity?: 'LOWER' | 'MIDDLE' | 'UPPER';
+  negativity?: 'LOWER' | 'MIDDLE' | 'UPPER' | 'UNKNOWN';
 }>`
   color: ${(props) =>
-    props.negativity === 'MIDDLE' || props.negativity === 'UPPER'
+    props.negativity === 'MIDDLE' ||
+    props.negativity === 'UPPER' ||
+    props.negativity === 'UNKNOWN'
       ? props.theme.COLORS.TEXT_HOLIDAY
       : props.theme.COLORS.TEXT_SECONDARY};
   font-size: 12px;
   margin-top: 4px;
 `;
 
+const HiddenItemContainer = styled(MessageItemContainer)`
+  padding: 0;
+`;
+
+const HideMessageButton = styled(TouchableOpacity)`
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: ${(props) => props.theme.COLORS.BUTTON_RED};
+`;
+
+interface HiddenItemsProps {
+  messageId: number;
+  onDeleteMessage?: (messageId: number) => void;
+  onHideMessage?: (messageId: number) => void;
+  swipeValue: Animated.Value;
+}
+
+const HiddenItems: React.FC<HiddenItemsProps> = ({
+  messageId,
+  onDeleteMessage,
+  onHideMessage,
+  swipeValue,
+}) => {
+  const { animatedValue: buttonWidth, animateToValue } = useAnimatedValue(0);
+
+  useEffect(() => {
+    const targetWidth = 55;
+    const listenerId = swipeValue.addListener(({ value }) => {
+      const width = Math.min(value, targetWidth);
+      animateToValue(width, 0, 0, false).start();
+    });
+
+    return () => {
+      swipeValue.removeListener(listenerId);
+    };
+  }, [swipeValue, animateToValue]);
+
+  const handlePress = useCallback(() => {
+    onDeleteMessage?.(messageId);
+    onHideMessage?.(messageId);
+  }, [messageId, onDeleteMessage, onHideMessage]);
+
+  return (
+    <HiddenItemContainer>
+      <Animated.View style={{ width: buttonWidth }}>
+        <HideMessageButton onPress={handlePress}>
+          <RemoveIcon width={16} height={16} />
+        </HideMessageButton>
+      </Animated.View>
+    </HiddenItemContainer>
+  );
+};
+
+interface MessageItemProps {
+  message: Message;
+  onPress: (message: Message) => void;
+  handleDeleteMessage?: (messageId: number) => void;
+  handleHideMessage?: (messageId: number) => void;
+  setIsSwiping: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export const MessageItemCard: React.FC<MessageItemProps> = ({
   message,
   onPress,
+  handleDeleteMessage,
+  handleHideMessage,
+  setIsSwiping,
 }) => {
-  const getTimeAgo = (timestamp?: string): string => {
+  const swipeRowRef = useRef<SwipeRow<unknown> | null>(null);
+  const [isRowOpen, setIsRowOpen] = useState(false);
+  const { animatedValue: swipeValue } = useAnimatedValue(0);
+
+  const getTimeAgo = useCallback((timestamp?: string): string => {
     if (!timestamp) {
       return '';
     }
@@ -70,39 +148,82 @@ export const MessageItemCard: React.FC<MessageItemProps> = ({
       const weeks = Math.floor(diff / week);
       return `${weeks}주 전`;
     }
-  };
+  }, []);
 
-  const getMessageStatus = (msg: Message) => {
-    if (!msg.negativity) {
-      return '분석 중';
-    } else if (msg.negativity === 'MIDDLE' || msg.negativity === 'UPPER') {
-      return '전송 실패';
-    }
-    return getTimeAgo(msg.timestamp);
-  };
+  const getMessageStatus = useCallback(
+    (msg: Message) => {
+      if (!msg.negativity) {
+        return '분석 중';
+      } else if (msg.negativity === 'MIDDLE' || msg.negativity === 'UPPER') {
+        return '부적절한 메시지';
+      } else if (msg.negativity === 'UNKNOWN') {
+        return '내용 분석 불가';
+      }
+      return getTimeAgo(msg.timestamp);
+    },
+    [getTimeAgo],
+  );
+
+  const handlePress = useCallback(() => {
+    onPress(message);
+  }, [message, onPress]);
 
   return (
-    <TouchableOpacity onPress={() => onPress(message)}>
+    // @ts-expect-error
+    <SwipeRow
+      style={{ borderRadius: 8, overflow: 'hidden' }}
+      ref={swipeRowRef}
+      leftOpenValue={55}
+      disableLeftSwipe={true}
+      onSwipeValueChange={(value) => {
+        swipeValue.setValue(value.value);
+      }}
+      swipeGestureBegan={() => setIsSwiping(true)}
+      swipeGestureEnded={() => setIsSwiping(false)}
+      onRowOpen={() => setIsRowOpen(true)}
+      onRowClose={() => setIsRowOpen(false)}
+    >
+      <HiddenItems
+        messageId={message.messageId}
+        onDeleteMessage={handleDeleteMessage}
+        onHideMessage={handleHideMessage}
+        swipeValue={swipeValue}
+      />
       <MessageItemContainer>
-        <View>
-          <Title numberOfLines={1}>{message.title}</Title>
+        <ButtonWrapper onPress={handlePress} disabled={isRowOpen}>
+          <MessageTitle numberOfLines={1}>{message.title}</MessageTitle>
           <MessageStatus negativity={message.negativity}>
             {getMessageStatus(message)}
           </MessageStatus>
-        </View>
+        </ButtonWrapper>
       </MessageItemContainer>
-    </TouchableOpacity>
+    </SwipeRow>
   );
 };
 
-const MessageList = ({
-  messages,
-  onPress,
-}: {
+interface MessageListProps {
   messages: Message[];
   onPress: (message: Message) => Promise<void>;
+  handleDeleteMessage?: (messageId: number) => void;
+  handleHideMessage?: (messageId: number) => void;
+  setIsSwiping: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const MessageList: React.FC<MessageListProps> = ({
+  messages,
+  onPress,
+  handleDeleteMessage,
+  handleHideMessage,
+  setIsSwiping,
 }) => {
-  const sortedMessages = [...messages].reverse();
+  const sortedMessages = useMemo(() => [...messages].reverse(), [messages]);
+
+  const handlePress = useCallback(
+    async (message: Message) => {
+      await onPress(message);
+    },
+    [onPress],
+  );
 
   return (
     <SpacedView gap={8}>
@@ -110,7 +231,10 @@ const MessageList = ({
         <MessageItemCard
           key={message.messageId}
           message={message}
-          onPress={onPress}
+          onPress={handlePress}
+          handleDeleteMessage={handleDeleteMessage}
+          handleHideMessage={handleHideMessage}
+          setIsSwiping={setIsSwiping}
         />
       ))}
     </SpacedView>
