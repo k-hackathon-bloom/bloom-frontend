@@ -28,7 +28,10 @@ const Button = styled(TouchableOpacity)<{
 const ButtonTitle = styled(StyledText)<{
   buttonTheme: 'primary' | 'secondary';
 }>`
-  font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
+  font-family: ${(props) =>
+    props.buttonTheme === 'secondary'
+      ? props.theme.FONT_WEIGHTS.REGULAR
+      : props.theme.FONT_WEIGHTS.MEDIUM};
   font-size: ${responsive(15, 'height')}px;
   color: ${(props) =>
     props.buttonTheme === 'secondary'

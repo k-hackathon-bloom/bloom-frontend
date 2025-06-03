@@ -25,31 +25,31 @@ const Overlay = styled(View)`
 
 const ModalContainer = styled(View)`
   width: ${responsive(320)}px;
-  max-width: 560px;
   background-color: white;
   justify-content: center;
   align-items: center;
-  border-radius: ${responsive(10, 'height')}px;
-  padding: ${responsive(30, 'height')}px 0 ${responsive(20, 'height')}px 0;
+  border-radius: 10px;
+  padding: 28px 0 20px 0;
 `;
 
 const ModalTitle = styled(StyledText)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.MEDIUM};
-  font-size: ${responsive(16, 'height')}px;
-  margin-bottom: ${responsive(15, 'height')}px;
+  font-size: 16px;
+  margin-bottom: 16px;
 `;
 
 const ModalDescription = styled(StyledText)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.LIGHT};
-  font-size: ${responsive(13, 'height')}px;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
+  font-size: 13px;
+  letter-spacing: -0.5px;
   color: gray;
-  margin-top: ${responsive(-10, 'height')}px;
-  margin-bottom: ${responsive(15, 'height')}px;
+  margin-top: -12px;
+  margin-bottom: 16px;
 `;
 
 const ModalContent = styled(View)`
-  width: 88%;
+  width: 100%;
+  padding: 0 20px;
   justify-content: center;
   align-items: center;
 `;
