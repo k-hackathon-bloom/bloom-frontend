@@ -8,11 +8,10 @@ import {
   Animated,
 } from 'react-native';
 import styled from 'styled-components/native';
-import Toast from 'react-native-toast-message';
+import { useReactToMessageMutation } from '@hooks/mutations/bottleMessageMutations';
 import { MessageDetails } from '@type/Message';
 import StyledText from '@components/common/StyledText';
 import AutoScrollText from '@components/AutoScrollText';
-import apiClient from '@apis/client';
 import LikeIcon from '@assets/icons/like.svg';
 import UnlikeIcon from '@assets/icons/unlike.svg';
 
@@ -119,11 +118,18 @@ const MessageModalContent: React.FC<MessageContentViewProps> = ({
 }) => {
   const [messageView, setMessageView] = useState(false);
   const [isReactedState, setIsReactedState] = useState(isReacted);
+
+  const reactToMessageMutation = useReactToMessageMutation();
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     fadeAnim.setValue(0);
   }, [message]);
+
+  useEffect(() => {
+    setIsReactedState(isReacted);
+  }, [isReacted]);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -134,36 +140,15 @@ const MessageModalContent: React.FC<MessageContentViewProps> = ({
   }, [messageView, fadeAnim]);
 
   const handleReaction = async () => {
+    const newReactionState = !isReactedState;
+    setIsReactedState(newReactionState);
     try {
-      if (!isReactedState) {
-        await apiClient.post(
-          `/api/bottle-messages/${message.messageId}/react`,
-          { reaction: 'LIKE' },
-        );
-        setIsReactedState(true);
-        Toast.show({
-          type: 'success',
-          text1: '공감을 표시했습니다.',
-        });
-      } else {
-        await apiClient.delete(
-          `/api/bottle-messages/${message.messageId}/react`,
-          { data: { reaction: 'LIKE' } },
-        );
-        setIsReactedState(false);
-        Toast.show({
-          type: 'success',
-          text1: '공감을 취소했습니다.',
-        });
-      }
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: isReactedState
-          ? '공감 취소 중 오류가 발생했습니다.'
-          : '공감 등록 중 오류가 발생했습니다.',
-        text2: String(error),
+      await reactToMessageMutation.mutateAsync({
+        messageId: message.messageId,
+        isReacting: newReactionState,
       });
+    } catch (error) {
+      setIsReactedState(isReactedState);
     }
   };
 
@@ -202,7 +187,10 @@ const MessageModalContent: React.FC<MessageContentViewProps> = ({
       <MessageInfoContainer>
         <AutoScrollText text={message.title} />
         {isReceived && (
-          <ReactionButton onPress={handleReaction}>
+          <ReactionButton
+            onPress={handleReaction}
+            disabled={reactToMessageMutation.isPending}
+          >
             {isReactedState ? <LikeIcon /> : <UnlikeIcon />}
           </ReactionButton>
         )}
