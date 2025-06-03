@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, ScrollView } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, ScrollView, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import apiClient from '@apis/client';
@@ -11,8 +11,12 @@ import ScreenLayout from '@screens/ScreenLayout';
 import BottleMessageHeader from '@screens/BottleMessage/components/BottleMessageHeader';
 import MessageList from '@screens/BottleMessage/components/MessageList';
 import MessageModalContent from '@screens/BottleMessage/components/MessageModalContent';
-import TextMessageForm from '@screens/BottleMessage/components/NewMessageSheet/TextMessageForm';
-import PostCardPicker from '@screens/BottleMessage/components/NewMessageSheet/PostCardPicker';
+import TextMessageForm, {
+  TextMessageFormHandles,
+} from '@screens/BottleMessage/components/NewMessageSheet/TextMessageForm';
+import PostCardPicker, {
+  PostCardPickerHandles,
+} from '@screens/BottleMessage/components/NewMessageSheet/PostCardPicker';
 import EmptyMessageImage from '@assets/images/empty-message.svg';
 
 const SwitchContainer = styled(View)`
@@ -22,7 +26,8 @@ const SwitchContainer = styled(View)`
 `;
 
 const SwitchButton = styled(StyledText)<{ isActive: boolean }>`
-  color: ${(props) => (props.isActive ? '#1F1F1F' : '#bbb')};
+  color: ${(props) =>
+    props.isActive ? props.theme.COLORS.TEXT_PRIMARY : '#bbb'};
   font-size: 16px;
   letter-spacing: -0.5px;
 `;
@@ -49,11 +54,15 @@ const BottleMessage = () => {
   const [selectedMessage, setSelectedMessage] = useState<MessageDetails | null>(
     null,
   );
-
   const [newMessageSheetVisible, setNewMessageSheetVisible] = useState(false);
   const [newMessageSheetStep, setNewMessageSheetStep] = useState(0);
   const [messageContentModalVisible, setMessageContentModalVisible] =
     useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [isMessageModified, setIsMessageModified] = useState(false);
+
+  const textMessageFormRef = useRef<TextMessageFormHandles>(null);
+  const postCardPickerRef = useRef<PostCardPickerHandles>(null);
 
   const fetchReceivedBottleMessages = useCallback(async () => {
     try {
@@ -62,8 +71,9 @@ const BottleMessage = () => {
         (message: any) => ({
           messageId: message.messages.messageId,
           title: message.messages.title,
-          imageUrl: message.messages.postCardUrl,
+          postCardUrl: message.messages.postCardUrl,
           timestamp: message.log.receivedAt,
+          negativity: 'LOWER',
         }),
       );
       setReceivedMessageList(bottleMessagesFromServer);
@@ -105,6 +115,9 @@ const BottleMessage = () => {
 
   const handleSendMessage = useCallback(
     async (title: string, content: string, postcardId: number) => {
+      setNewMessageSheetStep(0);
+      setNewMessageSheetVisible(false);
+      setIsMessageModified(false);
       try {
         await apiClient.post('/api/bottle-messages', {
           title,
@@ -116,8 +129,6 @@ const BottleMessage = () => {
           text1: '메시지를 성공적으로 보냈습니다.',
         });
         fetchSentBottleMessages();
-        setNewMessageSheetStep(0);
-        setNewMessageSheetVisible(false);
       } catch (error) {
         Toast.show({
           type: 'error',
@@ -149,41 +160,145 @@ const BottleMessage = () => {
     }
   }, []);
 
+  const handleDeleteMessage = useCallback(
+    async (messageId: number) => {
+      Alert.alert('메시지 삭제', '이 메시지를 삭제하시겠습니까?', [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          onPress: async () => {
+            try {
+              await apiClient.post(`/api/bottle-messages/${messageId}/delete`);
+              Toast.show({
+                type: 'success',
+                text1: '받은 메시지를 삭제했습니다.',
+              });
+              fetchReceivedBottleMessages();
+            } catch (error) {
+              Toast.show({
+                type: 'error',
+                text1: '받은 메시지를 삭제하는 데 실패했습니다.',
+                text2: String(error),
+              });
+            }
+          },
+        },
+      ]);
+    },
+    [fetchReceivedBottleMessages],
+  );
+
+  const handleHideMessage = useCallback(
+    async (messageId: number) => {
+      Alert.alert('메시지 삭제', '이 메시지를 삭제하시겠습니까?', [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          onPress: async () => {
+            try {
+              await apiClient.patch(`/api/bottle-messages/${messageId}/hide`);
+              Toast.show({
+                type: 'success',
+                text1: '보낸 메시지를 삭제했습니다.',
+              });
+              fetchSentBottleMessages();
+            } catch (error) {
+              Toast.show({
+                type: 'error',
+                text1: '보낸 메시지를 삭제하는 데 실패했습니다.',
+                text2: String(error),
+              });
+            }
+          },
+        },
+      ]);
+    },
+    [fetchSentBottleMessages],
+  );
+
   const handleCloseMessageContentModal = useCallback(() => {
     setSelectedMessage(null);
     setMessageContentModalVisible(false);
-  }, []);
-
-  const handleReactionUpdate = useCallback((updatedMessage: Message) => {
-    setReceivedMessageList((prev) =>
-      prev.map((msg) =>
-        msg.messageId === updatedMessage.messageId ? updatedMessage : msg,
-      ),
-    );
   }, []);
 
   const handleSwitch = useCallback((isReceivedPage: boolean) => {
     setShowReceivedMessages(isReceivedPage);
   }, []);
 
+  const handleSendButtonPress = useCallback(() => {
+    setNewMessageSheetVisible(true);
+    setIsMessageModified(false);
+  }, []);
+
+  const resetMessageForm = useCallback(() => {
+    if (textMessageFormRef.current) {
+      textMessageFormRef.current.resetForm();
+    }
+    if (postCardPickerRef.current) {
+      postCardPickerRef.current.resetSelection();
+    }
+  }, []);
+
+  const handleNewMessageSheetClose = useCallback(() => {
+    if (isMessageModified) {
+      Alert.alert(
+        '메시지 작성 취소',
+        '작성 중인 메시지가 모두 삭제됩니다.\n정말로 나가시겠습니까?',
+        [
+          {
+            text: '나가기',
+            style: 'destructive',
+            onPress: () => {
+              resetMessageForm();
+              setNewMessageSheetVisible(false);
+              setNewMessageSheetStep(0);
+              setIsMessageModified(false);
+            },
+          },
+          { text: '취소', style: 'cancel' },
+        ],
+      );
+    } else {
+      setNewMessageSheetVisible(false);
+      setNewMessageSheetStep(0);
+      setIsMessageModified(false);
+    }
+  }, [isMessageModified, resetMessageForm]);
+
+  const handleSwitchToReceived = useCallback(() => {
+    handleSwitch(true);
+  }, [handleSwitch]);
+
+  const handleSwitchToSent = useCallback(() => {
+    handleSwitch(false);
+  }, [handleSwitch]);
+
+  const handleNextStep = useCallback(() => {
+    setNewMessageSheetStep(1);
+  }, []);
+
+  const handlePrevStep = useCallback(() => {
+    setNewMessageSheetStep(0);
+  }, []);
+
   return (
     <ScreenLayout>
       <BottleMessageHeader
         title="유리병 메시지"
-        handleSendButtonPress={() => setNewMessageSheetVisible(true)}
+        handleSendButtonPress={handleSendButtonPress}
       />
       <SwitchContainer>
         <SwitchButton
           weight="MEDIUM"
           isActive={showReceivedMessages}
-          onPress={() => handleSwitch(true)}
+          onPress={handleSwitchToReceived}
         >
           받은 메시지
         </SwitchButton>
         <SwitchButton
           weight="MEDIUM"
           isActive={!showReceivedMessages}
-          onPress={() => handleSwitch(false)}
+          onPress={handleSwitchToSent}
         >
           보낸 메시지
         </SwitchButton>
@@ -192,10 +307,15 @@ const BottleMessage = () => {
       <MessageListContainer>
         {showReceivedMessages ? (
           receivedMessageList.length > 0 ? (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={!isSwiping}
+            >
               <MessageList
                 messages={receivedMessageList}
                 onPress={handleMessagePress}
+                handleDeleteMessage={handleDeleteMessage}
+                setIsSwiping={setIsSwiping}
               />
             </ScrollView>
           ) : (
@@ -205,10 +325,15 @@ const BottleMessage = () => {
             </EmptyMessageWrapper>
           )
         ) : sentMessageList.length > 0 ? (
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            scrollEnabled={!isSwiping}
+          >
             <MessageList
               messages={sentMessageList}
               onPress={handleMessagePress}
+              handleHideMessage={handleHideMessage}
+              setIsSwiping={setIsSwiping}
             />
           </ScrollView>
         ) : (
@@ -224,22 +349,21 @@ const BottleMessage = () => {
         title={newMessageSheetStep === 0 ? '메시지 작성' : '편지지 선택'}
         content={
           newMessageSheetStep === 0 ? (
-            <TextMessageForm setNewMessageSheetStep={setNewMessageSheetStep} />
+            <TextMessageForm
+              ref={textMessageFormRef}
+              setNewMessageSheetStep={handleNextStep}
+              setIsMessageModified={setIsMessageModified}
+            />
           ) : (
             <PostCardPicker
-              setNewMessageSheetStep={setNewMessageSheetStep}
-              onSendMessage={(
-                title: string,
-                content: string,
-                postcardId: number,
-              ) => handleSendMessage(title, content, postcardId)}
+              ref={postCardPickerRef}
+              setNewMessageSheetStep={handlePrevStep}
+              onSendMessage={handleSendMessage}
+              setIsMessageModified={setIsMessageModified}
             />
           )
         }
-        onClose={() => {
-          setNewMessageSheetStep(0);
-          setNewMessageSheetVisible(false);
-        }}
+        onClose={handleNewMessageSheetClose}
       />
 
       {selectedMessage && (
@@ -250,7 +374,6 @@ const BottleMessage = () => {
               message={selectedMessage.message}
               isReacted={selectedMessage.isReacted}
               isReceived={showReceivedMessages}
-              onReactionUpdate={handleReactionUpdate}
             />
           }
           onClose={handleCloseMessageContentModal}

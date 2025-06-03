@@ -1,4 +1,9 @@
-import React from 'react';
+import React, {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { View, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 import { useRecoilState } from 'recoil';
@@ -32,14 +37,43 @@ const ButtonContainer = styled(View)`
 
 const NextButton = styled(StyledButton)``;
 
-interface TextMessageFormProps {
-  setNewMessageSheetStep: React.Dispatch<React.SetStateAction<number>>;
+export interface TextMessageFormHandles {
+  resetForm: () => void;
 }
 
-const TextMessageForm: React.FC<TextMessageFormProps> = ({
-  setNewMessageSheetStep,
-}) => {
+interface TextMessageFormProps {
+  setNewMessageSheetStep: () => void;
+  setIsMessageModified: (modified: boolean) => void;
+}
+
+const TextMessageForm = forwardRef<
+  TextMessageFormHandles,
+  TextMessageFormProps
+>(({ setNewMessageSheetStep, setIsMessageModified }, ref) => {
   const [messageForm, setMessageForm] = useRecoilState(messageFormAtom);
+  const [initialForm, setInitialForm] = useState({ title: '', content: '' });
+
+  useEffect(() => {
+    setInitialForm({
+      title: messageForm.title,
+      content: messageForm.content,
+    });
+  }, []);
+
+  useEffect(() => {
+    const isModified =
+      messageForm.title !== initialForm.title ||
+      messageForm.content !== initialForm.content;
+    setIsMessageModified(isModified);
+  }, [messageForm, initialForm, setIsMessageModified]);
+
+  useImperativeHandle(ref, () => ({
+    resetForm: () => {
+      setMessageForm({ title: '', content: '' });
+      setInitialForm({ title: '', content: '' });
+      setIsMessageModified(false);
+    },
+  }));
 
   const handleTitleChange = (text: string) => {
     setMessageForm((prev) => ({ ...prev, title: text }));
@@ -47,6 +81,10 @@ const TextMessageForm: React.FC<TextMessageFormProps> = ({
 
   const handleContentChange = (text: string) => {
     setMessageForm((prev) => ({ ...prev, content: text }));
+  };
+
+  const handleNext = () => {
+    setNewMessageSheetStep();
   };
 
   return (
@@ -67,10 +105,10 @@ const TextMessageForm: React.FC<TextMessageFormProps> = ({
         onChangeText={handleContentChange}
       />
       <ButtonContainer>
-        <NextButton title="다음" onPress={() => setNewMessageSheetStep(1)} />
+        <NextButton title="다음" onPress={handleNext} />
       </ButtonContainer>
     </Container>
   );
-};
+});
 
 export default TextMessageForm;

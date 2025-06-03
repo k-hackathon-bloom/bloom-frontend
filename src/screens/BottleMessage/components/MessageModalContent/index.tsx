@@ -20,9 +20,6 @@ interface MessageContentViewProps {
   message: MessageDetails['message'];
   isReacted: boolean;
   isReceived: boolean;
-  onReactionUpdate: (
-    updatedMessage: MessageDetails['message'] & { isReacted: boolean },
-  ) => void;
 }
 
 const MessageContainer = styled(View)`
@@ -119,7 +116,6 @@ const MessageModalContent: React.FC<MessageContentViewProps> = ({
   message,
   isReacted,
   isReceived,
-  onReactionUpdate,
 }) => {
   const [messageView, setMessageView] = useState(false);
   const [isReactedState, setIsReactedState] = useState(isReacted);
@@ -160,12 +156,6 @@ const MessageModalContent: React.FC<MessageContentViewProps> = ({
           text1: '공감을 취소했습니다.',
         });
       }
-
-      const updatedMessage = {
-        ...message,
-        isReacted: !isReactedState,
-      };
-      onReactionUpdate(updatedMessage);
     } catch (error) {
       Toast.show({
         type: 'error',
