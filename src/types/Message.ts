@@ -2,7 +2,7 @@ interface BaseMessage {
   messageId: number;
   title: string;
   postCardUrl: string;
-  negativity?: 'LOWER' | 'MIDDLE' | 'UPPER';
+  negativity?: 'LOWER' | 'MIDDLE' | 'UPPER' | 'UNKNOWN';
   timestamp: string;
 }
 
