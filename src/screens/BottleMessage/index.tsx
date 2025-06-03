@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
@@ -11,8 +11,12 @@ import ScreenLayout from '@screens/ScreenLayout';
 import BottleMessageHeader from '@screens/BottleMessage/components/BottleMessageHeader';
 import MessageList from '@screens/BottleMessage/components/MessageList';
 import MessageModalContent from '@screens/BottleMessage/components/MessageModalContent';
-import TextMessageForm from '@screens/BottleMessage/components/NewMessageSheet/TextMessageForm';
-import PostCardPicker from '@screens/BottleMessage/components/NewMessageSheet/PostCardPicker';
+import TextMessageForm, {
+  TextMessageFormHandles,
+} from '@screens/BottleMessage/components/NewMessageSheet/TextMessageForm';
+import PostCardPicker, {
+  PostCardPickerHandles,
+} from '@screens/BottleMessage/components/NewMessageSheet/PostCardPicker';
 import EmptyMessageImage from '@assets/images/empty-message.svg';
 
 const SwitchContainer = styled(View)`
@@ -55,6 +59,10 @@ const BottleMessage = () => {
   const [messageContentModalVisible, setMessageContentModalVisible] =
     useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [isMessageModified, setIsMessageModified] = useState(false);
+
+  const textMessageFormRef = useRef<TextMessageFormHandles>(null);
+  const postCardPickerRef = useRef<PostCardPickerHandles>(null);
 
   const fetchReceivedBottleMessages = useCallback(async () => {
     try {
@@ -109,6 +117,7 @@ const BottleMessage = () => {
     async (title: string, content: string, postcardId: number) => {
       setNewMessageSheetStep(0);
       setNewMessageSheetVisible(false);
+      setIsMessageModified(false);
       try {
         await apiClient.post('/api/bottle-messages', {
           title,
@@ -218,12 +227,43 @@ const BottleMessage = () => {
 
   const handleSendButtonPress = useCallback(() => {
     setNewMessageSheetVisible(true);
+    setIsMessageModified(false);
+  }, []);
+
+  const resetMessageForm = useCallback(() => {
+    if (textMessageFormRef.current) {
+      textMessageFormRef.current.resetForm();
+    }
+    if (postCardPickerRef.current) {
+      postCardPickerRef.current.resetSelection();
+    }
   }, []);
 
   const handleNewMessageSheetClose = useCallback(() => {
-    setNewMessageSheetStep(0);
-    setNewMessageSheetVisible(false);
-  }, []);
+    if (isMessageModified) {
+      Alert.alert(
+        '메시지 작성 취소',
+        '작성 중인 메시지가 모두 삭제됩니다.\n정말로 나가시겠습니까?',
+        [
+          {
+            text: '나가기',
+            style: 'destructive',
+            onPress: () => {
+              resetMessageForm();
+              setNewMessageSheetVisible(false);
+              setNewMessageSheetStep(0);
+              setIsMessageModified(false);
+            },
+          },
+          { text: '취소', style: 'cancel' },
+        ],
+      );
+    } else {
+      setNewMessageSheetVisible(false);
+      setNewMessageSheetStep(0);
+      setIsMessageModified(false);
+    }
+  }, [isMessageModified, resetMessageForm]);
 
   const handleSwitchToReceived = useCallback(() => {
     handleSwitch(true);
@@ -232,6 +272,14 @@ const BottleMessage = () => {
   const handleSwitchToSent = useCallback(() => {
     handleSwitch(false);
   }, [handleSwitch]);
+
+  const handleNextStep = useCallback(() => {
+    setNewMessageSheetStep(1);
+  }, []);
+
+  const handlePrevStep = useCallback(() => {
+    setNewMessageSheetStep(0);
+  }, []);
 
   return (
     <ScreenLayout>
@@ -301,11 +349,17 @@ const BottleMessage = () => {
         title={newMessageSheetStep === 0 ? '메시지 작성' : '편지지 선택'}
         content={
           newMessageSheetStep === 0 ? (
-            <TextMessageForm setNewMessageSheetStep={setNewMessageSheetStep} />
+            <TextMessageForm
+              ref={textMessageFormRef}
+              setNewMessageSheetStep={handleNextStep}
+              setIsMessageModified={setIsMessageModified}
+            />
           ) : (
             <PostCardPicker
-              setNewMessageSheetStep={setNewMessageSheetStep}
+              ref={postCardPickerRef}
+              setNewMessageSheetStep={handlePrevStep}
               onSendMessage={handleSendMessage}
+              setIsMessageModified={setIsMessageModified}
             />
           )
         }

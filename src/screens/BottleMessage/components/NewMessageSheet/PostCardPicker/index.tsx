@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import {
   View,
   FlatList,
@@ -56,9 +62,14 @@ const ButtonContainer = styled(View)`
   background-color: white;
 `;
 
+export interface PostCardPickerHandles {
+  resetSelection: () => void;
+}
+
 interface PostCardPickerProps {
-  setNewMessageSheetStep: React.Dispatch<React.SetStateAction<number>>;
+  setNewMessageSheetStep: () => void;
   onSendMessage: (title: string, content: string, postcardId: number) => void;
+  setIsMessageModified: (modified: boolean) => void;
 }
 
 interface PostCard {
@@ -66,85 +77,127 @@ interface PostCard {
   url: string;
 }
 
-const PostCardPicker: React.FC<PostCardPickerProps> = ({
-  setNewMessageSheetStep,
-  onSendMessage,
-}) => {
-  const [postCardImages, setPostCardImages] = useState<PostCard[]>([]);
-  const [selectedPostCard, setSelectedPostCard] = useState<number | null>(null);
-  const messageForm = useRecoilValue(messageFormAtom);
-  const setMessageForm = useSetRecoilState(messageFormAtom);
+const PostCardPicker = forwardRef<PostCardPickerHandles, PostCardPickerProps>(
+  ({ setNewMessageSheetStep, onSendMessage, setIsMessageModified }, ref) => {
+    const [postCardImages, setPostCardImages] = useState<PostCard[]>([]);
+    const [selectedPostCard, setSelectedPostCard] = useState<number | null>(
+      null,
+    );
+    const [initialSelectedPostCard, setInitialSelectedPostCard] = useState<
+      number | null
+    >(null);
+    const messageForm = useRecoilValue(messageFormAtom);
+    const setMessageForm = useSetRecoilState(messageFormAtom);
 
-  const fetchPostCards = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/postcard/all');
-      setPostCardImages(response.data.postcards);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '편지지를 불러오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, []);
+    useEffect(() => {
+      setInitialSelectedPostCard(selectedPostCard);
+    }, []);
 
-  useEffect(() => {
-    fetchPostCards();
-  }, [fetchPostCards]);
+    useEffect(() => {
+      const isPostCardModified = selectedPostCard !== initialSelectedPostCard;
+      const hasMessageContent =
+        messageForm.title.trim() !== '' || messageForm.content.trim() !== '';
+      const isModified = isPostCardModified || hasMessageContent;
+      setIsMessageModified(isModified);
+    }, [
+      selectedPostCard,
+      initialSelectedPostCard,
+      messageForm,
+      setIsMessageModified,
+    ]);
 
-  const handlePostCardSelection = (postcardId: number) => {
-    setSelectedPostCard(postcardId);
-  };
+    useImperativeHandle(ref, () => ({
+      resetSelection: () => {
+        setSelectedPostCard(null);
+        setInitialSelectedPostCard(null);
+        setMessageForm({ title: '', content: '' });
+        setIsMessageModified(false);
+      },
+    }));
 
-  const handleSubmit = () => {
-    if (selectedPostCard) {
-      onSendMessage(messageForm.title, messageForm.content, selectedPostCard);
-      setMessageForm({ title: '', content: '' });
-      setSelectedPostCard(null);
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: '편지지를 선택해 주세요.',
-      });
-    }
-  };
+    const fetchPostCards = useCallback(async () => {
+      try {
+        const response = await apiClient.get('/api/postcard/all');
+        setPostCardImages(response.data.postcards);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: '편지지를 불러오는 데 실패했습니다.',
+          text2: String(error),
+        });
+      }
+    }, []);
 
-  const renderItem = ({ item }: { item: PostCard }) => (
-    <PostCardButton
-      selected={selectedPostCard === item.id}
-      onPress={() => handlePostCardSelection(item.id)}
-    >
-      <PostCardButtonImageWrapper>
-        <PostCardButtonImage source={{ uri: item.url }} resizeMode="cover" />
-      </PostCardButtonImageWrapper>
-    </PostCardButton>
-  );
+    useEffect(() => {
+      fetchPostCards();
+    }, [fetchPostCards]);
 
-  return (
-    <Container>
-      <ListContainer>
-        <FlatList
-          data={postCardImages}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={3}
-          showsVerticalScrollIndicator={false}
-          columnWrapperStyle={{
-            justifyContent: 'flex-start',
-            gap: 12,
-          }}
-        />
-      </ListContainer>
-      <ButtonContainer>
-        <StyledButton
-          title="이전"
-          buttonTheme="secondary"
-          onPress={() => setNewMessageSheetStep(0)}
-        />
-        <StyledButton title="전송" onPress={handleSubmit} />
-      </ButtonContainer>
-    </Container>
-  );
-};
+    const handlePostCardSelection = (postcardId: number) => {
+      setSelectedPostCard(postcardId);
+    };
+
+    const handleSubmit = useCallback(() => {
+      if (selectedPostCard) {
+        onSendMessage(messageForm.title, messageForm.content, selectedPostCard);
+        setMessageForm({ title: '', content: '' });
+        setSelectedPostCard(null);
+        setInitialSelectedPostCard(null);
+        setIsMessageModified(false);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: '편지지를 선택해 주세요.',
+        });
+      }
+    }, [
+      selectedPostCard,
+      messageForm,
+      onSendMessage,
+      setMessageForm,
+      setIsMessageModified,
+    ]);
+
+    const handlePrevious = () => {
+      setNewMessageSheetStep();
+    };
+
+    const renderItem = ({ item }: { item: PostCard }) => (
+      <PostCardButton
+        selected={selectedPostCard === item.id}
+        onPress={() => handlePostCardSelection(item.id)}
+      >
+        <PostCardButtonImageWrapper>
+          <PostCardButtonImage source={{ uri: item.url }} resizeMode="cover" />
+        </PostCardButtonImageWrapper>
+      </PostCardButton>
+    );
+
+    return (
+      <Container>
+        <ListContainer>
+          <FlatList
+            data={postCardImages}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={3}
+            showsVerticalScrollIndicator={false}
+            columnWrapperStyle={{
+              justifyContent: 'flex-start',
+              gap: 12,
+            }}
+          />
+        </ListContainer>
+        <ButtonContainer>
+          <StyledButton
+            title="이전"
+            buttonTheme="secondary"
+            onPress={handlePrevious}
+          />
+          <StyledButton title="전송" onPress={handleSubmit} />
+        </ButtonContainer>
+      </Container>
+    );
+  },
+);
 
 export default PostCardPicker;
