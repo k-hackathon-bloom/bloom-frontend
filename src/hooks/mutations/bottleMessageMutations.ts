@@ -109,12 +109,14 @@ export const useReactToMessageMutation = () => {
         });
       }
     },
-    onSuccess: (_, { isReacting }) => {
+    onSuccess: (_, { messageId, isReacting }) => {
       Toast.show({
         type: 'success',
         text1: isReacting ? '공감을 표시했습니다.' : '공감을 취소했습니다.',
       });
-      queryClient.invalidateQueries({ queryKey: ['messageDetails'] });
+      queryClient.invalidateQueries({
+        queryKey: ['messageDetails', messageId],
+      });
     },
     onError: (error, { isReacting }) => {
       Toast.show({

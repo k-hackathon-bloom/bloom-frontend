@@ -3,7 +3,10 @@ import { ScrollView } from 'react-native';
 import ScreenLayout from '@screens/ScreenLayout';
 import Toast from 'react-native-toast-message';
 import useUserDataQuery from '@hooks/queries/useUserDataQuery';
-import useRegisteredQuestsQuery from '@hooks/queries/useRegisteredQuestsQuery';
+import {
+  useRegisteredQuestsQuery,
+  useAllQuestsQuery,
+} from '@hooks/queries/questQueries';
 import {
   useDeleteQuestMutation,
   useCompleteQuestMutation,
@@ -12,34 +15,28 @@ import {
 import HomeHeader from '@screens/Home/components/HomeHeader';
 import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
 import DailyProgress from '@screens/Home/components/DailyProgress';
-import apiClient from '@apis/client';
-import Quest from '@type/Quest';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
 import ActiveQuestItem from '@screens/Home/components/ActiveQuestItem';
 
-const fetchAllQuests = async (): Promise<Quest[]> => {
-  const response = await apiClient.get('/api/quests/available');
-  return response.data.quests.map((quest: Quest) => ({
-    id: quest.id,
-    iconUrl: quest.iconUrl,
-    title: quest.title,
-  }));
-};
-
 const Home = () => {
+  const [questModalVisible, setQuestModalVisible] = useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [, setExp] = useState(0);
+
   const { data: userData } = useUserDataQuery();
-  const { data: registeredQuests = [], isSuccess } = useRegisteredQuestsQuery();
+  const { data: registeredQuests = [], isSuccess: registeredQuestsSuccess } =
+    useRegisteredQuestsQuery();
+  const {
+    data: allQuests = [],
+    isLoading: allQuestsLoading,
+    error: allQuestsError,
+  } = useAllQuestsQuery();
 
   const deleteQuestMutation = useDeleteQuestMutation();
   const completeQuestMutation = useCompleteQuestMutation();
   const updateQuestsMutation = useUpdateQuestsMutation();
-
-  const [allQuests, setAllQuests] = useState<Quest[]>([]);
-  const [questModalVisible, setQuestModalVisible] = useState(false);
-  const [isSwiping, setIsSwiping] = useState(false);
-  const [, setExp] = useState(0);
 
   const handleDeleteQuest = async (questId: number) => {
     if (registeredQuests.length > 3) {
@@ -71,27 +68,24 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const loadAllQuests = async () => {
-      try {
-        const quests = await fetchAllQuests();
-        setAllQuests(quests);
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
-          text2: String(error),
-        });
-      }
-    };
-
-    loadAllQuests();
-  }, []);
+    if (allQuestsError) {
+      Toast.show({
+        type: 'error',
+        text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
+        text2: String(allQuestsError),
+      });
+    }
+  }, [allQuestsError]);
 
   useEffect(() => {
-    if (isSuccess && registeredQuests.length < 3) {
+    if (
+      registeredQuestsSuccess &&
+      registeredQuests.length < 3 &&
+      !allQuestsLoading
+    ) {
       setQuestModalVisible(true);
     }
-  }, [isSuccess, registeredQuests]);
+  }, [registeredQuestsSuccess, registeredQuests, allQuestsLoading]);
 
   return (
     <ScreenLayout>

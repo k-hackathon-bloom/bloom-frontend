@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import useDailyQuestionQuery from '@hooks/queries/useDailyQuestionQuery';
-import useDoneTasksQuery from '@hooks/queries/useDoneTasksQuery';
+import { useDoneTasksQuery } from '@hooks/queries/taskQueries';
+import { useRegisterQuestionMutation } from '@hooks/mutations/questionMutations';
 import {
-  useRegisterDailyQuestionMutation,
-  useAddDoneTaskMutation,
-  useDeleteDoneTaskMutation,
-} from '@hooks/mutations/diaryMutations';
+  useAddTaskMutation,
+  useDeleteTaskMutation,
+} from '@hooks/mutations/taskMutations';
 import ScreenLayout from '@screens/ScreenLayout';
 import DiaryHeader from '@screens/Diary/components/DiaryHeader';
 import getFormatedDate from '@utils/getFormatedDate';
@@ -28,6 +28,8 @@ import responsive from '@utils/responsive';
 const Diary = () => {
   const [date, setDate] = useState(new Date());
   const [answer, setAnswer] = useState('');
+  const [questionRegistered, setQuestionRegistered] = useState(false);
+  const [registrationFailed, setRegistrationFailed] = useState(false);
   const [initialAnswer, setInitialAnswer] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [saying, setSaying] = useState('');
@@ -36,33 +38,30 @@ const Diary = () => {
   const [selectedTask, setSelectedTask] = useState(0);
   const [isTaskModified, setIsTaskModified] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
+
   const questionModalRef = useRef<QuestionModalContentHandles>(null);
   const taskModalRef = useRef<TaskModalContentHandles>(null);
 
-  const getLocalDateString = () => {
+  const getLocalDateString = useCallback(() => {
     const offset = date.getTimezoneOffset() * 60000;
     const dateOffset = new Date(date.getTime() - offset);
     return dateOffset.toISOString().split('T')[0];
-  };
+  }, [date]);
 
   const localDate = getLocalDateString();
 
-  const { data: questionData, refetch: refetchQuestion } =
-    useDailyQuestionQuery(localDate);
+  const {
+    data: questionData,
+    refetch: refetchQuestion,
+    isLoading: questionLoading,
+  } = useDailyQuestionQuery(localDate);
 
   const { data: doneList = [], refetch: refetchTasks } =
     useDoneTasksQuery(localDate);
 
-  const registerQuestionMutation = useRegisterDailyQuestionMutation();
-  const addTaskMutation = useAddDoneTaskMutation();
-  const deleteTaskMutation = useDeleteDoneTaskMutation();
-
-  useEffect(() => {
-    if (questionData) {
-      setAnswer(questionData.answer);
-      setInitialAnswer(questionData.answer);
-    }
-  }, [questionData]);
+  const registerQuestionMutation = useRegisterQuestionMutation();
+  const addTaskMutation = useAddTaskMutation();
+  const deleteTaskMutation = useDeleteTaskMutation();
 
   const isToday = useCallback(() => {
     const today = new Date();
@@ -74,15 +73,47 @@ const Diary = () => {
   }, [date]);
 
   useEffect(() => {
-    const registerQuestion = async () => {
-      if (isToday() && questionData && !questionData.question) {
-        await registerQuestionMutation.mutateAsync();
-        refetchQuestion();
-      }
-    };
+    setQuestionRegistered(false);
+    setRegistrationFailed(false);
+  }, [localDate]);
 
-    registerQuestion();
-  }, [date, questionData, registerQuestionMutation, refetchQuestion, isToday]);
+  useEffect(() => {
+    if (questionData) {
+      setAnswer(questionData.answer || '');
+      setInitialAnswer(questionData.answer || '');
+    }
+  }, [questionData]);
+
+  useEffect(() => {
+    const shouldRegisterQuestion =
+      isToday() &&
+      !questionLoading &&
+      !questionData &&
+      !questionRegistered &&
+      !registrationFailed &&
+      !registerQuestionMutation.isPending;
+
+    if (shouldRegisterQuestion) {
+      setQuestionRegistered(true);
+      registerQuestionMutation.mutate(undefined, {
+        onSuccess: () => {
+          refetchQuestion();
+        },
+        onError: () => {
+          setQuestionRegistered(false);
+          setRegistrationFailed(true);
+        },
+      });
+    }
+  }, [
+    isToday(),
+    questionLoading,
+    questionData,
+    questionRegistered,
+    registrationFailed,
+    registerQuestionMutation,
+    refetchQuestion,
+  ]);
 
   const saveAnswer = () => {
     if (questionModalRef.current) {
@@ -118,7 +149,11 @@ const Diary = () => {
   };
 
   const handleAddTask = async () => {
-    await addTaskMutation.mutateAsync(localDate);
+    try {
+      await addTaskMutation.mutateAsync(localDate);
+    } catch (error) {
+      console.error('태스크 추가 실패:', error);
+    }
   };
 
   const handleDeleteTask = async (taskId: number) => {
@@ -127,7 +162,11 @@ const Diary = () => {
       {
         text: '확인',
         onPress: async () => {
-          await deleteTaskMutation.mutateAsync({ taskId, date: localDate });
+          try {
+            await deleteTaskMutation.mutateAsync({ taskId, date: localDate });
+          } catch (error) {
+            console.error('태스크 삭제 실패:', error);
+          }
         },
       },
     ]);
@@ -182,7 +221,6 @@ const Diary = () => {
           saying={saying}
           handleOpenModal={() => {
             if (questionData?.question) {
-              refetchQuestion();
               setQuestionModalVisible(true);
             }
           }}

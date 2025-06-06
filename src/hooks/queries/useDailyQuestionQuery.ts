@@ -18,9 +18,14 @@ const fetchDailyQuestion = async (
   };
 };
 
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+
 const useDailyQuestionQuery = (date: string) =>
   useQuery({
-    queryKey: ['dailyQuestion', date],
+    queryKey: ['dailyQuestion', `${year}-${month}-${day}`],
     queryFn: () => fetchDailyQuestion(date),
     retry: false,
   });

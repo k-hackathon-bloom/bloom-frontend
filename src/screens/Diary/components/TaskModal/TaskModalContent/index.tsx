@@ -1,6 +1,5 @@
 import React, {
   useState,
-  useCallback,
   useEffect,
   forwardRef,
   useImperativeHandle,
@@ -20,18 +19,18 @@ import {
   ImageLibraryOptions,
   ImagePickerResponse,
 } from 'react-native-image-picker';
-import Toast from 'react-native-toast-message';
+import { useTaskDetailQuery } from '@hooks/queries/taskQueries';
+import { useUpdateTaskMutation } from '@hooks/mutations/taskMutations';
 import StyledButton from '@components/common/StyledButton';
 import responsive from '@utils/responsive';
 import SpacedView from '@components/common/SpacedView';
-import apiClient from '@apis/client';
 
 const ContentContainer = styled(View)`
   width: 100%;
 `;
 
 const TaskTitle = styled(TextInput)`
-  font-family: 'GowunDodum-Regular';
+  font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
   font-size: ${responsive(14, 'height')}px;
   padding: 0 ${responsive(15)}px;
 `;
@@ -57,7 +56,7 @@ const TaskPhoto = styled(Image)`
 
 const TaskContent = styled(TextInput)`
   height: ${responsive(120, 'height')}px;
-  font-family: 'GowunDodum-Regular';
+  font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
   font-size: ${responsive(14, 'height')}px;
   text-align: justify;
   text-align-vertical: top;
@@ -114,10 +113,12 @@ const TaskModalContent = forwardRef<
   const [taskPhotos, setTaskPhotos] = useState<Photo[]>([]);
   const [initialTaskState, setInitialTaskState] = useState<Task | null>(null);
 
-  const fetchTaskDetail = useCallback(async () => {
-    try {
-      const { data } = await apiClient.get(`/api/done-list/detail/${id}`);
-      const { doneItem, photoUrls } = data;
+  const { data: taskDetail } = useTaskDetailQuery(id);
+  const updateTaskMutation = useUpdateTaskMutation();
+
+  useEffect(() => {
+    if (taskDetail) {
+      const { doneItem, photoUrls } = taskDetail;
       setTaskTitle(doneItem.title);
       setTaskContent(doneItem.content);
       setTaskPhotos(photoUrls);
@@ -126,14 +127,8 @@ const TaskModalContent = forwardRef<
         content: doneItem.content,
         photos: photoUrls,
       });
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '던 리스트를 불러오는 데 실패했습니다.',
-        text2: String(error),
-      });
     }
-  }, [id]);
+  }, [taskDetail]);
 
   const handlePickImage = () => {
     const options: ImageLibraryOptions = {
@@ -206,7 +201,6 @@ const TaskModalContent = forwardRef<
         }));
 
       taskData.deletedPhotoIds = deletedPhotoIds;
-      // @ts-expect-error
       photosToUpload.forEach((photo) => formData.append('files', photo));
     }
 
@@ -219,24 +213,10 @@ const TaskModalContent = forwardRef<
 
     const formData = prepareTaskData();
 
-    try {
-      await apiClient.put(`/api/done-list/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      fetchTasks();
-      setIsTaskModified(false);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '변경 사항을 저장하는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    await updateTaskMutation.mutateAsync({ id, formData });
+    fetchTasks();
+    setIsTaskModified(false);
   };
-
-  useEffect(() => {
-    fetchTaskDetail();
-  }, [fetchTaskDetail]);
 
   useEffect(() => {
     if (
@@ -291,7 +271,11 @@ const TaskModalContent = forwardRef<
           disabled={taskPhotos.length === MAX_PHOTO_COUNT}
           onPress={handlePickImage}
         />
-        <StyledButton title="저장" onPress={handleSaveTask} />
+        <StyledButton
+          title="저장"
+          onPress={handleSaveTask}
+          disabled={updateTaskMutation.isPending}
+        />
       </ButtonContainer>
     </ContentContainer>
   );

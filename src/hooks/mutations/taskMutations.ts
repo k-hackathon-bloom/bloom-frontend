@@ -2,27 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import apiClient from '@apis/client';
 
-export const useRegisterDailyQuestionMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      await apiClient.get('/api/daily-question');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dailyQuestion'] });
-    },
-    onError: (error) => {
-      Toast.show({
-        type: 'error',
-        text1: '오늘의 질문을 등록하는 데 실패했습니다.',
-        text2: String(error),
-      });
-    },
-  });
-};
-
-export const useAddDoneTaskMutation = () => {
+export const useAddTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -52,7 +32,7 @@ export const useAddDoneTaskMutation = () => {
   });
 };
 
-export const useDeleteDoneTaskMutation = () => {
+export const useDeleteTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -66,6 +46,38 @@ export const useDeleteDoneTaskMutation = () => {
       Toast.show({
         type: 'error',
         text1: '던 리스트 항목을 삭제하는 데 실패했습니다.',
+        text2: String(error),
+      });
+    },
+  });
+};
+
+interface UpdateTaskParams {
+  id: number;
+  formData: FormData;
+}
+
+export const useUpdateTaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, formData }: UpdateTaskParams) => {
+      await apiClient.put(`/api/done-list/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    },
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['taskDetail', id] });
+
+      Toast.show({
+        type: 'success',
+        text1: '변경 사항이 저장되었습니다.',
+      });
+    },
+    onError: (error) => {
+      Toast.show({
+        type: 'error',
+        text1: '변경 사항을 저장하는 데 실패했습니다.',
         text2: String(error),
       });
     },
