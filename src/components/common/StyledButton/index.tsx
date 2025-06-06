@@ -18,13 +18,13 @@ const Button = styled(TouchableOpacity)<{
       : props.theme.COLORS.BUTTON_PRIMARY};
   width: 100%;
   padding: 16px;
-  border-radius: 6px;
+  border-radius: 10px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 
-const ButtonTitle = styled(StyledText)<{
+const ButtonLabel = styled(StyledText)<{
   buttonTheme: 'primary' | 'secondary';
 }>`
   font-family: ${(props) =>
@@ -71,9 +71,9 @@ const StyledButton: React.FC<ButtonProps> = ({
       onPress={onPress}
     >
       {icon && <IconWrapper>{icon}</IconWrapper>}
-      <ButtonTitle buttonTheme={buttonTheme} style={titleStyle}>
+      <ButtonLabel buttonTheme={buttonTheme} style={titleStyle}>
         {title}
-      </ButtonTitle>
+      </ButtonLabel>
     </Button>
   );
 };
