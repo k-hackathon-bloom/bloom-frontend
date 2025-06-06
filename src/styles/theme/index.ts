@@ -26,11 +26,15 @@ const theme = {
     CELL_TODAY: '#E8F7FD',
   },
   FONT_WEIGHTS: {
-    THIN: 'SpoqaHanSansNeo-Thin',
-    LIGHT: 'SpoqaHanSansNeo-Light',
-    REGULAR: 'SpoqaHanSansNeo-Regular',
-    MEDIUM: 'SpoqaHanSansNeo-Medium',
-    BOLD: 'SpoqaHanSansNeo-Bold',
+    THIN: 'Pretendard-Thin',
+    EXTRA_LIGHT: 'Pretendard-ExtraLight',
+    LIGHT: 'Pretendard-Light',
+    REGULAR: 'Pretendard-Regular',
+    MEDIUM: 'Pretendard-Medium',
+    SEMI_BOLD: 'Pretendard-SemiBold',
+    BOLD: 'Pretendard-Bold',
+    EXTRA_BOLD: 'Pretendard-ExtraBold',
+    BLACK: 'Pretendard-Black',
   },
 };
 

@@ -146,7 +146,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({
 
   return (
     <Container>
-      <Title weight="MEDIUM">{getTitle()}</Title>
+      <Title weight="SEMI_BOLD">{getTitle()}</Title>
       <Divider>
         <SubTitle>
           한 달에 평균 {Math.round(averageValue)}개의 꽃을 피웠어요.

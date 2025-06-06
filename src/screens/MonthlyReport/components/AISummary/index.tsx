@@ -83,7 +83,7 @@ const AISummary: React.FC<AISummaryProps> = ({
     <Container>
       <TitleContainer>
         <AIIcon width={20} height={20} />
-        <Title weight="MEDIUM">총평</Title>
+        <Title weight="SEMI_BOLD">총평</Title>
       </TitleContainer>
       <Summary>{displayedText}</Summary>
     </Container>
