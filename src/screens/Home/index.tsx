@@ -1,84 +1,46 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import ScreenLayout from '@screens/ScreenLayout';
-import { questsAtom, userDataAtom, expAtom } from '@recoil/atoms';
 import Toast from 'react-native-toast-message';
+import useUserDataQuery from '@hooks/queries/useUserDataQuery';
+import {
+  useRegisteredQuestsQuery,
+  useAllQuestsQuery,
+} from '@hooks/queries/questQueries';
+import {
+  useDeleteQuestMutation,
+  useCompleteQuestMutation,
+  useUpdateQuestsMutation,
+} from '@hooks/mutations/questMutations';
 import HomeHeader from '@screens/Home/components/HomeHeader';
 import DailyQuestHeader from '@screens/Home/components/DailyQuestHeader';
 import DailyProgress from '@screens/Home/components/DailyProgress';
-import apiClient from '@apis/client';
-import Quest from '@type/Quest';
 import ModalLayout from '@components/ModalLayout';
 import QuestModalContent from '@screens/Home/components/QuestModal/QuestModalContent';
 import SpacedView from '@components/common/SpacedView';
 import ActiveQuestItem from '@screens/Home/components/ActiveQuestItem';
 
 const Home = () => {
-  const userData = useRecoilValue(userDataAtom);
-  const [allQuests, setAllQuests] = useState<Quest[]>([]);
-  const [registeredQuests, setRegisteredQuests] =
-    useRecoilState<Quest[]>(questsAtom);
-  const [exp, setExp] = useRecoilState<number>(expAtom);
   const [questModalVisible, setQuestModalVisible] = useState(false);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [, setExp] = useState(0);
 
-  const fetchAllQuests = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/quests/available');
-      const questsFromServer = response.data.quests.map((quest: Quest) => ({
-        id: quest.id,
-        iconUrl: quest.iconUrl,
-        title: quest.title,
-      }));
-      setAllQuests(questsFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, []);
+  const { data: userData } = useUserDataQuery();
+  const { data: registeredQuests = [], isSuccess: registeredQuestsSuccess } =
+    useRegisteredQuestsQuery();
+  const {
+    data: allQuests = [],
+    isLoading: allQuestsLoading,
+    error: allQuestsError,
+  } = useAllQuestsQuery();
 
-  const fetchRegisteredQuests = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/quests/registered');
-      const registeredQuestsFromServer = response.data.quests.map(
-        (quest: Quest) => ({
-          id: quest.id,
-          iconUrl: quest.iconUrl,
-          title: quest.title,
-          maxCount: quest.maxCount,
-          isDone: quest.isDone,
-        }),
-      );
-      if (registeredQuestsFromServer.length < 3) {
-        setQuestModalVisible(true);
-        return;
-      }
-      setRegisteredQuests(registeredQuestsFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '등록한 퀘스트를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, [setRegisteredQuests]);
+  const deleteQuestMutation = useDeleteQuestMutation();
+  const completeQuestMutation = useCompleteQuestMutation();
+  const updateQuestsMutation = useUpdateQuestsMutation();
 
   const handleDeleteQuest = async (questId: number) => {
     if (registeredQuests.length > 3) {
-      try {
-        await apiClient.delete(`/api/quests/${questId}`);
-        await fetchRegisteredQuests();
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '퀘스트를 삭제하는 데 실패했습니다.',
-          text2: String(error),
-        });
-      }
+      deleteQuestMutation.mutate(questId);
     } else {
       Toast.show({
         type: 'info',
@@ -91,51 +53,43 @@ const Home = () => {
     questIdsToAdd: number[],
     questIdsToRemove: number[],
   ) => {
-    try {
-      if (questIdsToAdd.length > 0) {
-        await apiClient.post('/api/quests', { questIds: questIdsToAdd });
-      }
-
-      if (questIdsToRemove.length > 0) {
-        await Promise.all(
-          questIdsToRemove.map((questId) =>
-            apiClient.delete(`/api/quests/${questId}`),
-          ),
-        );
-      }
-
-      await fetchRegisteredQuests();
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트 업데이트에 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    updateQuestsMutation.mutate({
+      questIdsToAdd,
+      questIdsToRemove,
+    });
   };
 
   const handleCompleteQuest = async (questId: number) => {
-    try {
-      await apiClient.patch(`/api/quests/${questId}/complete`);
-      await fetchRegisteredQuests();
-      setExp(exp + 1);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '퀘스트를 완료하는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    completeQuestMutation.mutate(questId, {
+      onSuccess: () => {
+        setExp((prev) => prev + 1);
+      },
+    });
   };
 
   useEffect(() => {
-    fetchAllQuests();
-    fetchRegisteredQuests();
-  }, [fetchAllQuests, fetchRegisteredQuests]);
+    if (allQuestsError) {
+      Toast.show({
+        type: 'error',
+        text1: '퀘스트 데이터를 가져오는 데 실패했습니다.',
+        text2: String(allQuestsError),
+      });
+    }
+  }, [allQuestsError]);
+
+  useEffect(() => {
+    if (
+      registeredQuestsSuccess &&
+      registeredQuests.length < 3 &&
+      !allQuestsLoading
+    ) {
+      setQuestModalVisible(true);
+    }
+  }, [registeredQuestsSuccess, registeredQuests, allQuestsLoading]);
 
   return (
     <ScreenLayout>
-      <HomeHeader title={`${userData.nickname}님 안녕하세요!`} />
+      <HomeHeader title={`${userData?.nickname}님 안녕하세요!`} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         scrollEnabled={!isSwiping}
@@ -167,9 +121,7 @@ const Home = () => {
           <QuestModalContent
             quests={allQuests}
             setModalVisible={setQuestModalVisible}
-            registeredQuestIds={registeredQuests.map(
-              (quest: Quest) => quest.id,
-            )}
+            registeredQuestIds={registeredQuests.map((quest) => quest.id)}
             completedQuestIds={
               registeredQuests.length > 0
                 ? registeredQuests

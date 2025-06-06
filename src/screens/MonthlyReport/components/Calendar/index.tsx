@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Animated } from 'react-native';
 import styled from 'styled-components/native';
+import {
+  useMonthlyAchievementQuery,
+  useHolidaysQuery,
+} from '@hooks/queries/calendarQueries';
 import { SvgUri } from 'react-native-svg';
-import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
 import ItemLayout from '@components/ItemLayout';
 import responsive from '@utils/responsive';
-import apiClient from '@apis/client';
-import fetchHolidayList from '@apis/fetchHolidayList';
 import theme from '@styles/theme';
 import BackIcon from '@assets/icons/back.svg';
 import ForwardIcon from '@assets/icons/forward.svg';
@@ -94,123 +95,41 @@ const DateText = styled(StyledText)<{ isToday: boolean; day: number }>`
   text-align: center;
 `;
 
-interface DailyAchievement {
-  date: string;
-  flowerIconUrl: string;
-}
-
 const Calendar = () => {
   const [currentYearMonth, setCurrentYearMonth] = useState(new Date());
-  const [holidays, setHolidays] = useState<number[]>([]);
-  const [holidayCache, setHolidayCache] = useState<{ [key: string]: number[] }>(
-    {},
-  );
-  const [monthlyAchievement, setMonthlyAchievement] = useState<
-    DailyAchievement[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [iconScales, setIconScales] = useState<{
-    [key: string]: Animated.Value;
-  }>({});
+  const iconScalesRef = useRef<{ [key: string]: Animated.Value }>({});
+
   const currentYear = currentYearMonth.getFullYear();
   const currentMonth = currentYearMonth.getMonth() + 1;
   const today = new Date();
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        const monthKey = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
-        let prevMonthKey: string, nextMonthKey: string;
+  const yearMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
 
-        if (currentMonth === 1) {
-          prevMonthKey = `${currentYear - 1}-12`;
-        } else {
-          prevMonthKey = `${currentYear}-${String(currentMonth - 1).padStart(2, '0')}`;
-        }
+  const { data: monthlyAchievement = [], isLoading: achievementLoading } =
+    useMonthlyAchievementQuery(yearMonth);
 
-        if (currentMonth === 12) {
-          nextMonthKey = `${currentYear + 1}-01`;
-        } else {
-          nextMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-        }
+  const { data: holidays = [], isLoading: holidaysLoading } = useHolidaysQuery(
+    currentYear.toString(),
+    String(currentMonth).padStart(2, '0'),
+  );
 
-        const currentMonthHolidays = holidayCache[monthKey];
+  const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+  const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+  const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+  const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
 
-        if (!currentMonthHolidays) {
-          const holidayListCurrentMonth = await fetchHolidayList(
-            currentYear.toString(),
-            currentMonth.toString().padStart(2, '0'),
-          );
+  useHolidaysQuery(prevYear.toString(), String(prevMonth).padStart(2, '0'));
+  useHolidaysQuery(nextYear.toString(), String(nextMonth).padStart(2, '0'));
 
-          setHolidayCache((prevCache) => ({
-            ...prevCache,
-            [monthKey]: holidayListCurrentMonth || [],
-          }));
-          setHolidays(holidayListCurrentMonth || []);
-        } else {
-          setHolidays(currentMonthHolidays);
-        }
-
-        if (!holidayCache[prevMonthKey]) {
-          const holidayListPrevMonth = await fetchHolidayList(
-            prevMonthKey.split('-')[0],
-            prevMonthKey.split('-')[1],
-          );
-          setHolidayCache((prevCache) => ({
-            ...prevCache,
-            [prevMonthKey]: holidayListPrevMonth || [],
-          }));
-        }
-
-        if (!holidayCache[nextMonthKey]) {
-          const holidayListNextMonth = await fetchHolidayList(
-            nextMonthKey.split('-')[0],
-            nextMonthKey.split('-')[1],
-          );
-          setHolidayCache((prevCache) => ({
-            ...prevCache,
-            [nextMonthKey]: holidayListNextMonth || [],
-          }));
-        }
-
-        const response = await apiClient.get('/api/achievement/monthly', {
-          params: {
-            month: `${currentYear}-${String(currentMonth).padStart(2, '0')}`,
-          },
-        });
-
-        const monthlyAchievementFromServer = response.data.dailyData.map(
-          (item: { date: string; flowerIconUrl: string }) => ({
-            date: item.date,
-            flowerIconUrl: item.flowerIconUrl,
-          }),
-        );
-        setMonthlyAchievement(monthlyAchievementFromServer);
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '월간 리포트를 불러오는 데 실패했습니다.',
-          text2: String(error),
-        });
-        setMonthlyAchievement([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, [currentYear, currentMonth, holidayCache]);
+  const isLoading = achievementLoading || holidaysLoading;
 
   useEffect(() => {
-    const scales: { [key: string]: Animated.Value } = {};
     monthlyAchievement.forEach((item) => {
-      if (!scales[item.date]) {
-        scales[item.date] = new Animated.Value(0);
+      if (!iconScalesRef.current[item.date]) {
+        iconScalesRef.current[item.date] = new Animated.Value(0);
       }
     });
-    setIconScales(scales);
   }, [monthlyAchievement]);
 
   const renderDates = () => {
@@ -285,7 +204,7 @@ const Calendar = () => {
                         transform: [
                           {
                             scale:
-                              iconScales[dailyAchievement.date] ||
+                              iconScalesRef.current[dailyAchievement.date] ||
                               new Animated.Value(0),
                           },
                         ],
@@ -297,12 +216,15 @@ const Calendar = () => {
                         width={responsive(15, 'height')}
                         height={responsive(15, 'height')}
                         onLoad={() => {
-                          if (iconScales[dailyAchievement.date]) {
-                            Animated.timing(iconScales[dailyAchievement.date], {
-                              toValue: 1,
-                              duration: 500,
-                              useNativeDriver: true,
-                            }).start();
+                          if (iconScalesRef.current[dailyAchievement.date]) {
+                            Animated.timing(
+                              iconScalesRef.current[dailyAchievement.date],
+                              {
+                                toValue: 1,
+                                duration: 500,
+                                useNativeDriver: true,
+                              },
+                            ).start();
                           }
                         }}
                       />
@@ -317,40 +239,36 @@ const Calendar = () => {
     return dates;
   };
 
+  const handlePrevMonth = () => {
+    setCurrentYearMonth(
+      new Date(currentYearMonth.setMonth(currentYearMonth.getMonth() - 1)),
+    );
+  };
+
+  const handleNextMonth = () => {
+    if (
+      currentYear !== today.getFullYear() ||
+      currentMonth !== today.getMonth() + 1
+    ) {
+      setCurrentYearMonth(
+        new Date(currentYearMonth.setMonth(currentYearMonth.getMonth() + 1)),
+      );
+    }
+  };
+
   return (
     <CalendarContainer>
       <CalendarHeader>
         <YearText>{currentYear}</YearText>
         <MonthText>{currentMonth.toString().padStart(2, '0')}</MonthText>
         <ButtonContainer>
-          <Button
-            onPress={() =>
-              setCurrentYearMonth(
-                new Date(
-                  currentYearMonth.setMonth(currentYearMonth.getMonth() - 1),
-                ),
-              )
-            }
-          >
+          <Button onPress={handlePrevMonth}>
             <BackIcon
               width={responsive(12, 'height')}
               height={responsive(12, 'height')}
             />
           </Button>
-          <Button
-            onPress={() => {
-              if (
-                currentYear !== today.getFullYear() ||
-                currentMonth !== today.getMonth() + 1
-              ) {
-                setCurrentYearMonth(
-                  new Date(
-                    currentYearMonth.setMonth(currentYearMonth.getMonth() + 1),
-                  ),
-                );
-              }
-            }}
-          >
+          <Button onPress={handleNextMonth}>
             <ForwardIcon
               width={responsive(12, 'height')}
               height={responsive(12, 'height')}

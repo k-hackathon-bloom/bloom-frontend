@@ -1,32 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, ScrollView } from 'react-native';
-import Toast from 'react-native-toast-message';
+import useMonthlyReportQuery from '@hooks/queries/useMonthlyReportQuery';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import ScreenLayout from '@screens/ScreenLayout';
 import MonthlyReportHeader from '@screens/MonthlyReport/components/MonthlyReportHeader';
 import Calendar from '@screens/MonthlyReport/components/Calendar';
 import MonthlyChart from '@screens/MonthlyReport/components/MonthlyChart';
 import AISummary from '@screens/MonthlyReport/components/AISummary';
-import apiClient from '@apis/client';
-
-interface MonthlyDataItem {
-  month: number;
-  bloomed: number;
-}
-
-interface MonthlyReportResponse {
-  monthlyData: MonthlyDataItem[];
-  averageBloomed: number;
-  aiSummary: string;
-}
-
-type FormattedMonthlyData = Record<string, number>;
 
 const MonthlyReport: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [monthlyData, setMonthlyData] = useState<FormattedMonthlyData>({});
-  const [averageValue, setAverageValue] = useState<number>(0);
-  const [summary, setSummary] = useState<string>('');
   const [isTypingComplete, setIsTypingComplete] = useState<boolean>(false);
   const [isDragScreen, setIsDragScreen] = useState<boolean>(false);
 
@@ -34,52 +16,9 @@ const MonthlyReport: React.FC = () => {
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const userScrolledRef = useRef<boolean>(false);
 
-  const formatMonthData = (data: MonthlyDataItem[]): FormattedMonthlyData => {
-    const formattedData: FormattedMonthlyData = {};
+  const { data: reportData, isLoading } = useMonthlyReportQuery();
 
-    data.forEach((item) => {
-      const monthString = `${item.month}`.slice(4);
-      const monthNumber = monthString.substring(0, 2).replace(/^0/, '');
-      const monthName = `${monthNumber}월`;
-      formattedData[monthName] = item.bloomed;
-    });
-
-    return formattedData;
-  };
-
-  const fetchMonthlyData = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
-
-    try {
-      const response = await apiClient.get<MonthlyReportResponse>(
-        '/api/achievement/recent-six-months',
-      );
-
-      const {
-        monthlyData: apiMonthlyData,
-        averageBloomed,
-        aiSummary,
-      } = response.data;
-      const formattedData = formatMonthData(apiMonthlyData);
-
-      setMonthlyData(formattedData);
-      setAverageValue(averageBloomed);
-      setSummary(aiSummary);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '월간 리포트 데이터를 가져오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    } finally {
-      setIsLoading(false);
-      setTimeout(() => {
-        startAutoScroll();
-      }, 500);
-    }
-  }, []);
-
-  const startAutoScroll = () => {
+  const startAutoScroll = useCallback(() => {
     if (autoScrollIntervalRef.current) {
       clearInterval(autoScrollIntervalRef.current);
     }
@@ -96,7 +35,7 @@ const MonthlyReport: React.FC = () => {
         }
       }
     }, 500);
-  };
+  }, [isTypingComplete]);
 
   const scrollToBottom = () => {
     if (scrollViewRef.current) {
@@ -120,14 +59,20 @@ const MonthlyReport: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchMonthlyData();
+    if (reportData && !isLoading) {
+      setTimeout(() => {
+        startAutoScroll();
+      }, 500);
+    }
+  }, [reportData, isLoading, startAutoScroll]);
 
+  useEffect(() => {
     return () => {
       if (autoScrollIntervalRef.current) {
         clearInterval(autoScrollIntervalRef.current);
       }
     };
-  }, [fetchMonthlyData]);
+  }, []);
 
   return (
     <ScreenLayout>
@@ -148,17 +93,21 @@ const MonthlyReport: React.FC = () => {
           <View>
             <LoadingSpinner />
           </View>
-        ) : (
+        ) : reportData ? (
           <View>
             <Calendar />
             <MonthlyChart
-              monthlyData={monthlyData}
-              averageValue={averageValue}
+              monthlyData={reportData.monthlyData}
+              averageValue={reportData.averageBloomed}
             />
             <AISummary
-              summary={summary}
+              summary={reportData.aiSummary}
               onTypingComplete={handleTypingComplete}
             />
+          </View>
+        ) : (
+          <View>
+            <LoadingSpinner />
           </View>
         )}
       </ScrollView>

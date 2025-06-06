@@ -1,12 +1,21 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { View, ScrollView, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import Toast from 'react-native-toast-message';
-import apiClient from '@apis/client';
-import { Message, MessageDetails } from '@type/Message';
+import { Message } from '@type/Message';
+import {
+  useReceivedBottleMessagesQuery,
+  useSentBottleMessagesQuery,
+  useMessageDetailsQuery,
+} from '@hooks/queries/bottleMessageQueries';
+import {
+  useSendBottleMessageMutation,
+  useDeleteBottleMessageMutation,
+  useHideBottleMessageMutation,
+} from '@hooks/mutations/bottleMessageMutations';
 import StyledText from '@components/common/StyledText';
 import ModalLayout from '@components/ModalLayout';
 import BottomSheetLayout from '@components/BottomSheetLayout';
+import LoadingSpinner from '@components/common/LoadingSpinner';
 import ScreenLayout from '@screens/ScreenLayout';
 import BottleMessageHeader from '@screens/BottleMessage/components/BottleMessageHeader';
 import MessageList from '@screens/BottleMessage/components/MessageList';
@@ -48,10 +57,8 @@ const EmptyMessageText = styled(StyledText)`
 `;
 
 const BottleMessage = () => {
-  const [receivedMessageList, setReceivedMessageList] = useState<Message[]>([]);
-  const [sentMessageList, setSentMessageList] = useState<Message[]>([]);
   const [showReceivedMessages, setShowReceivedMessages] = useState(true);
-  const [selectedMessage, setSelectedMessage] = useState<MessageDetails | null>(
+  const [selectedMessageId, setSelectedMessageId] = useState<number | null>(
     null,
   );
   const [newMessageSheetVisible, setNewMessageSheetVisible] = useState(false);
@@ -64,100 +71,33 @@ const BottleMessage = () => {
   const textMessageFormRef = useRef<TextMessageFormHandles>(null);
   const postCardPickerRef = useRef<PostCardPickerHandles>(null);
 
-  const fetchReceivedBottleMessages = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/bottle-messages');
-      const bottleMessagesFromServer = response.data.bottleMessageResponses.map(
-        (message: any) => ({
-          messageId: message.messages.messageId,
-          title: message.messages.title,
-          postCardUrl: message.messages.postCardUrl,
-          timestamp: message.log.receivedAt,
-          negativity: 'LOWER',
-        }),
-      );
-      setReceivedMessageList(bottleMessagesFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '받은 유리병 메시지를 불러오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, []);
+  const { data: receivedMessageList = [], isLoading: receivedLoading } =
+    useReceivedBottleMessagesQuery();
+  const { data: sentMessageList = [], isLoading: sentLoading } =
+    useSentBottleMessagesQuery();
+  const { data: selectedMessageData } = useMessageDetailsQuery(
+    selectedMessageId!,
+    !!selectedMessageId,
+  );
 
-  const fetchSentBottleMessages = useCallback(async () => {
-    try {
-      const response = await apiClient.get('/api/bottle-messages/sent');
-      const bottleMessagesFromServer = response.data.messages.map(
-        (message: any) => ({
-          messageId: message.message.messageId,
-          title: message.message.title,
-          imageUrl: message.message.postCardUrl,
-          timestamp: message.sentAt,
-          negativity: message.message.negativity,
-        }),
-      );
-      setSentMessageList(bottleMessagesFromServer);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '보낸 유리병 메시지를 불러오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchReceivedBottleMessages();
-    fetchSentBottleMessages();
-  }, [fetchReceivedBottleMessages, fetchSentBottleMessages]);
+  const sendMessageMutation = useSendBottleMessageMutation();
+  const deleteMessageMutation = useDeleteBottleMessageMutation();
+  const hideMessageMutation = useHideBottleMessageMutation();
 
   const handleSendMessage = useCallback(
     async (title: string, content: string, postcardId: number) => {
       setNewMessageSheetStep(0);
       setNewMessageSheetVisible(false);
       setIsMessageModified(false);
-      try {
-        await apiClient.post('/api/bottle-messages', {
-          title,
-          content,
-          postcardId,
-        });
-        Toast.show({
-          type: 'success',
-          text1: '메시지를 성공적으로 보냈습니다.',
-        });
-        fetchSentBottleMessages();
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '유리병 메시지를 보내는 데 실패했습니다.',
-          text2: String(error),
-        });
-      }
+
+      await sendMessageMutation.mutateAsync({ title, content, postcardId });
     },
-    [fetchSentBottleMessages],
+    [sendMessageMutation],
   );
 
   const handleMessagePress = useCallback(async (message: Message) => {
-    try {
-      const response = await apiClient.get(
-        `/api/bottle-messages/${message.messageId}`,
-      );
-      const messageDetails: MessageDetails = {
-        message: response.data.message,
-        isReacted: response.data.reaction.isReacted,
-      };
-      setSelectedMessage(messageDetails);
-      setMessageContentModalVisible(true);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: '유리병 메시지 상세 정보를 불러오는 데 실패했습니다.',
-        text2: String(error),
-      });
-    }
+    setSelectedMessageId(message.messageId);
+    setMessageContentModalVisible(true);
   }, []);
 
   const handleDeleteMessage = useCallback(
@@ -167,25 +107,12 @@ const BottleMessage = () => {
         {
           text: '삭제',
           onPress: async () => {
-            try {
-              await apiClient.post(`/api/bottle-messages/${messageId}/delete`);
-              Toast.show({
-                type: 'success',
-                text1: '받은 메시지를 삭제했습니다.',
-              });
-              fetchReceivedBottleMessages();
-            } catch (error) {
-              Toast.show({
-                type: 'error',
-                text1: '받은 메시지를 삭제하는 데 실패했습니다.',
-                text2: String(error),
-              });
-            }
+            await deleteMessageMutation.mutateAsync(messageId);
           },
         },
       ]);
     },
-    [fetchReceivedBottleMessages],
+    [deleteMessageMutation],
   );
 
   const handleHideMessage = useCallback(
@@ -195,29 +122,16 @@ const BottleMessage = () => {
         {
           text: '삭제',
           onPress: async () => {
-            try {
-              await apiClient.patch(`/api/bottle-messages/${messageId}/hide`);
-              Toast.show({
-                type: 'success',
-                text1: '보낸 메시지를 삭제했습니다.',
-              });
-              fetchSentBottleMessages();
-            } catch (error) {
-              Toast.show({
-                type: 'error',
-                text1: '보낸 메시지를 삭제하는 데 실패했습니다.',
-                text2: String(error),
-              });
-            }
+            await hideMessageMutation.mutateAsync(messageId);
           },
         },
       ]);
     },
-    [fetchSentBottleMessages],
+    [hideMessageMutation],
   );
 
   const handleCloseMessageContentModal = useCallback(() => {
-    setSelectedMessage(null);
+    setSelectedMessageId(null);
     setMessageContentModalVisible(false);
   }, []);
 
@@ -281,6 +195,10 @@ const BottleMessage = () => {
     setNewMessageSheetStep(0);
   }, []);
 
+  const currentMessageList = showReceivedMessages
+    ? receivedMessageList
+    : sentMessageList;
+
   return (
     <ScreenLayout>
       <BottleMessageHeader
@@ -303,47 +221,39 @@ const BottleMessage = () => {
           보낸 메시지
         </SwitchButton>
       </SwitchContainer>
-
-      <MessageListContainer>
-        {showReceivedMessages ? (
-          receivedMessageList.length > 0 ? (
+      {receivedLoading || sentLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <MessageListContainer>
+          {currentMessageList.length > 0 ? (
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEnabled={!isSwiping}
             >
               <MessageList
-                messages={receivedMessageList}
+                messages={currentMessageList}
                 onPress={handleMessagePress}
-                handleDeleteMessage={handleDeleteMessage}
+                handleDeleteMessage={
+                  showReceivedMessages ? handleDeleteMessage : undefined
+                }
+                handleHideMessage={
+                  !showReceivedMessages ? handleHideMessage : undefined
+                }
                 setIsSwiping={setIsSwiping}
               />
             </ScrollView>
           ) : (
             <EmptyMessageWrapper>
               <EmptyMessageImage />
-              <EmptyMessageText>아직 받은 메시지가 없어요.</EmptyMessageText>
+              <EmptyMessageText>
+                {showReceivedMessages
+                  ? '아직 받은 메시지가 없어요.'
+                  : '아직 보낸 메시지가 없어요.'}
+              </EmptyMessageText>
             </EmptyMessageWrapper>
-          )
-        ) : sentMessageList.length > 0 ? (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            scrollEnabled={!isSwiping}
-          >
-            <MessageList
-              messages={sentMessageList}
-              onPress={handleMessagePress}
-              handleHideMessage={handleHideMessage}
-              setIsSwiping={setIsSwiping}
-            />
-          </ScrollView>
-        ) : (
-          <EmptyMessageWrapper>
-            <EmptyMessageImage />
-            <EmptyMessageText>아직 보낸 메시지가 없어요.</EmptyMessageText>
-          </EmptyMessageWrapper>
-        )}
-      </MessageListContainer>
-
+          )}
+        </MessageListContainer>
+      )}
       <BottomSheetLayout
         visible={newMessageSheetVisible}
         title={newMessageSheetStep === 0 ? '메시지 작성' : '편지지 선택'}
@@ -365,14 +275,13 @@ const BottleMessage = () => {
         }
         onClose={handleNewMessageSheetClose}
       />
-
-      {selectedMessage && (
+      {selectedMessageData && (
         <ModalLayout
           visible={messageContentModalVisible}
           content={
             <MessageModalContent
-              message={selectedMessage.message}
-              isReacted={selectedMessage.isReacted}
+              message={selectedMessageData.message}
+              isReacted={selectedMessageData.isReacted}
               isReceived={showReceivedMessages}
             />
           }

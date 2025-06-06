@@ -1,4 +1,5 @@
 import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RecoilRoot } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from 'styled-components/native';
@@ -8,22 +9,26 @@ import responsive from '@utils/responsive';
 import toastStyle from '@styles/toastStyle';
 import StackNavigator from '@screens/navigators/StackNavigator';
 
-function App(): React.JSX.Element {
+const queryClient = new QueryClient();
+
+const App = () => {
   return (
     <RecoilRoot>
-      <ThemeProvider theme={theme}>
-        <NavigationContainer>
-          <StackNavigator />
-        </NavigationContainer>
-        <Toast
-          config={toastStyle}
-          position="bottom"
-          bottomOffset={responsive(60, 'height')}
-          visibilityTime={2000}
-        />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <NavigationContainer>
+            <StackNavigator />
+          </NavigationContainer>
+          <Toast
+            config={toastStyle}
+            position="bottom"
+            bottomOffset={responsive(60, 'height')}
+            visibilityTime={2000}
+          />
+        </ThemeProvider>
+      </QueryClientProvider>
     </RecoilRoot>
   );
-}
+};
 
 export default App;

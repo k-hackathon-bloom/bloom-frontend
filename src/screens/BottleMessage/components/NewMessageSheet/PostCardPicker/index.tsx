@@ -15,9 +15,9 @@ import {
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { usePostCardsQuery } from '@hooks/queries/bottleMessageQueries';
 import { messageFormAtom } from '@recoil/atoms';
 import StyledButton from '@components/common/StyledButton';
-import apiClient from '@apis/client';
 
 const { width } = Dimensions.get('window');
 
@@ -79,15 +79,17 @@ interface PostCard {
 
 const PostCardPicker = forwardRef<PostCardPickerHandles, PostCardPickerProps>(
   ({ setNewMessageSheetStep, onSendMessage, setIsMessageModified }, ref) => {
-    const [postCardImages, setPostCardImages] = useState<PostCard[]>([]);
     const [selectedPostCard, setSelectedPostCard] = useState<number | null>(
       null,
     );
     const [initialSelectedPostCard, setInitialSelectedPostCard] = useState<
       number | null
     >(null);
+
     const messageForm = useRecoilValue(messageFormAtom);
     const setMessageForm = useSetRecoilState(messageFormAtom);
+
+    const { data: postCardImages = [], error } = usePostCardsQuery();
 
     useEffect(() => {
       setInitialSelectedPostCard(selectedPostCard);
@@ -114,23 +116,6 @@ const PostCardPicker = forwardRef<PostCardPickerHandles, PostCardPickerProps>(
         setIsMessageModified(false);
       },
     }));
-
-    const fetchPostCards = useCallback(async () => {
-      try {
-        const response = await apiClient.get('/api/postcard/all');
-        setPostCardImages(response.data.postcards);
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: '편지지를 불러오는 데 실패했습니다.',
-          text2: String(error),
-        });
-      }
-    }, []);
-
-    useEffect(() => {
-      fetchPostCards();
-    }, [fetchPostCards]);
 
     const handlePostCardSelection = (postcardId: number) => {
       setSelectedPostCard(postcardId);
@@ -171,6 +156,14 @@ const PostCardPicker = forwardRef<PostCardPickerHandles, PostCardPickerProps>(
         </PostCardButtonImageWrapper>
       </PostCardButton>
     );
+
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: '편지지를 불러오는 데 실패했습니다.',
+        text2: String(error),
+      });
+    }
 
     return (
       <Container>

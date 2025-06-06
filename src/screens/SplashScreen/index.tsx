@@ -6,8 +6,8 @@ import Toast from 'react-native-toast-message';
 import { useNetInfo } from '@react-native-community/netinfo';
 import ScreenLayout from '@screens/ScreenLayout';
 import AnimatedIcon from '@screens/SplashScreen/AnimatedIcon';
+import useUserDataQuery from '@hooks/queries/useUserDataQuery';
 import useNavigate from '@hooks/useNavigate';
-import useFetchUserData from '@hooks/useFetchUserData';
 
 const LogoContainer = styled(View)`
   flex: 1;
@@ -18,7 +18,7 @@ const LogoContainer = styled(View)`
 const SplashScreen = () => {
   const netInfo = useNetInfo();
   const { replaceTo } = useNavigate();
-  const { fetchUserData } = useFetchUserData();
+  const { refetch: refetchUserData } = useUserDataQuery();
 
   useEffect(() => {
     const checkNetworkAndFetchData = async () => {
@@ -31,11 +31,14 @@ const SplashScreen = () => {
       }
 
       const accessToken = await AsyncStorage.getItem('accessToken');
+
       if (accessToken) {
+        console.log('accessToken', accessToken);
         try {
-          await fetchUserData();
+          const { error } = await refetchUserData();
+          if (error) throw error;
           replaceTo('Main');
-        } catch (error) {
+        } catch {
           replaceTo('Login');
         }
       } else {
@@ -44,9 +47,8 @@ const SplashScreen = () => {
     };
 
     const timeout = setTimeout(checkNetworkAndFetchData, 2100);
-
     return () => clearTimeout(timeout);
-  }, [netInfo.isInternetReachable, replaceTo, fetchUserData]);
+  }, [netInfo.isInternetReachable, replaceTo, refetchUserData]);
 
   return (
     <ScreenLayout backgroundColor="white">
