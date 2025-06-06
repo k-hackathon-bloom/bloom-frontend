@@ -12,7 +12,6 @@ import {
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 import toastStyle from '@styles/toastStyle';
 
 const { height: screenHeight } = Dimensions.get('window');
@@ -159,7 +158,7 @@ const BottomSheetLayout: React.FC<ModalProps> = ({
       <Toast
         config={toastStyle}
         position="bottom"
-        bottomOffset={responsive(60, 'height')}
+        bottomOffset={60}
         visibilityTime={2000}
       />
     </Modal>

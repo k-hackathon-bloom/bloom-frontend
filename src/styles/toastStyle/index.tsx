@@ -4,7 +4,6 @@ import { Dimensions } from 'react-native';
 import { BaseToastProps, BaseToast } from 'react-native-toast-message';
 import { ShadowedView } from 'react-native-fast-shadow';
 import theme from '@styles/theme';
-import responsive from '@utils/responsive';
 
 const { width } = Dimensions.get('window');
 
@@ -12,29 +11,29 @@ const ToastWrapper = styled(ShadowedView)`
   background: white;
   border-radius: 6px;
   shadow-opacity: 0.05;
-  shadow-radius: ${responsive(10, 'height')}px;
+  shadow-radius: 10px;
   shadow-offset: 0px 0px;
 `;
 
 const commonStyle = {
   style: {
     width: width * 0.88,
-    height: responsive(70, 'height'),
-    borderLeftWidth: responsive(7, 'height'),
+    height: 70,
+    borderLeftWidth: 7,
     shadowOpacity: 0,
     elevation: 0,
   },
-  contentContainerStyle: { paddingHorizontal: responsive(20, 'height') },
+  contentContainerStyle: { paddingHorizontal: 20 },
   text1Style: {
     fontFamily: theme.FONT_WEIGHTS.REGULAR,
     fontWeight: undefined,
-    fontSize: responsive(14, 'height'),
+    fontSize: 14,
     color: theme.COLORS.TEXT_PRIMARY,
   },
   text2Style: {
     fontFamily: theme.FONT_WEIGHTS.LIGHT,
     fontWeight: undefined,
-    fontSize: responsive(11, 'height'),
+    fontSize: 11,
     color: theme.COLORS.TEXT_PRIMARY,
   },
 };

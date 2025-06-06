@@ -23,7 +23,6 @@ import TaskModalContent, {
   TaskModalContentHandles,
 } from '@screens/Diary/components/TaskModal/TaskModalContent';
 import SpacedView from '@components/common/SpacedView';
-import responsive from '@utils/responsive';
 
 const Diary = () => {
   const [date, setDate] = useState(new Date());
@@ -226,7 +225,7 @@ const Diary = () => {
           }}
         />
         <DoneListHeader />
-        <SpacedView gap={responsive(8, 'height')}>
+        <SpacedView gap={8}>
           {doneList.map((item) => (
             <DoneListItem
               key={item.id}

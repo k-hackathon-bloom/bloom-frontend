@@ -6,7 +6,6 @@ import { SwipeRow } from 'react-native-swipe-list-view';
 import ItemLayout from '@components/ItemLayout';
 import StyledText from '@components/common/StyledText';
 import QuestCounter from '@screens/Home/components/ActiveQuestItem/QuestCounter';
-import responsive from '@utils/responsive';
 import useAnimatedValue from '@hooks/useAnimatedValue';
 import DeleteIcon from '@assets/icons/delete.svg';
 import CompleteIcon from '@assets/icons/complete.svg';
@@ -15,21 +14,21 @@ const QuestContainer = styled(ItemLayout)`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  height: ${responsive(80, 'height')}px;
+  height: 80px;
   padding: 0;
-  border-radius: ${responsive(8, 'height')}px;
+  border-radius: 8px;
   overflow: hidden;
 `;
 
 const QuestTitle = styled(StyledText)`
-  font-size: ${responsive(14, 'height')}px;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
+  font-size: 14px;
+  letter-spacing: -0.5px;
 `;
 
 const IconWrapper = styled(View)`
-  width: ${responsive(35, 'height')}px;
+  width: 35px;
   align-items: center;
-  margin: 0 ${responsive(12, 'height')}px 0 ${responsive(20, 'height')}px;
+  margin: 0 12px 0 20px;
 `;
 
 const QuestIcon = styled(SvgUri)``;
@@ -43,7 +42,7 @@ const DeleteButton = styled(TouchableOpacity)`
 
 const StyledDeleteIcon = styled(DeleteIcon)`
   position: absolute;
-  left: ${responsive(25, 'height')}px;
+  left: 25px;
 `;
 
 const CompleteButton = styled(TouchableOpacity)`
@@ -55,7 +54,7 @@ const CompleteButton = styled(TouchableOpacity)`
 
 const StyledCompleteIcon = styled(CompleteIcon)`
   position: absolute;
-  left: ${responsive(25, 'height')}px;
+  left: 25px;
 `;
 
 const DisabledOverlay = styled(View)`
@@ -88,11 +87,7 @@ const QuestDetails: React.FC<QuestDetailsProps> = ({
 }) => (
   <QuestContainer>
     <IconWrapper>
-      <QuestIcon
-        uri={`http://${iconUrl}`}
-        width={responsive(28, 'height')}
-        height={responsive(28, 'height')}
-      />
+      <QuestIcon uri={iconUrl} width={28} height={28} />
     </IconWrapper>
     <QuestTitle>{title}</QuestTitle>
     {maxCount > 1 && !isDone && (
@@ -123,7 +118,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
   const { animatedValue: buttonWidth, animateToValue } = useAnimatedValue(0);
 
   useEffect(() => {
-    const targetWidth = responsive(140, 'height');
+    const targetWidth = 140;
     const listenerId = swipeValue.addListener(({ value }) => {
       const width = Math.min(value / 2, targetWidth / 2);
       animateToValue(width, 0, 0, false).start();
@@ -138,18 +133,12 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
     <QuestContainer>
       <Animated.View style={{ width: buttonWidth }}>
         <DeleteButton onPress={() => onDeleteQuest(questId)}>
-          <StyledDeleteIcon
-            width={responsive(20, 'height')}
-            height={responsive(20, 'height')}
-          />
+          <StyledDeleteIcon width={20} height={20} />
         </DeleteButton>
       </Animated.View>
       <Animated.View style={{ width: buttonWidth }}>
         <CompleteButton onPress={() => onCompleteQuest(questId)}>
-          <StyledCompleteIcon
-            width={responsive(20, 'height')}
-            height={responsive(20, 'height')}
-          />
+          <StyledCompleteIcon width={20} height={20} />
         </CompleteButton>
       </Animated.View>
     </QuestContainer>
@@ -186,7 +175,7 @@ const ActiveQuestItem: React.FC<QuestItemProps> = ({
     // @ts-expect-error
     <SwipeRow
       ref={swipeRowRef}
-      leftOpenValue={responsive(140, 'height')}
+      leftOpenValue={140}
       disableLeftSwipe={true}
       disableRightSwipe={isDone}
       onSwipeValueChange={(value) => {

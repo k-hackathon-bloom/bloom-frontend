@@ -9,7 +9,6 @@ import {
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 import toastStyle from '@styles/toastStyle';
 
 const KeyboardAvoidingContainer = styled(KeyboardAvoidingView)`
@@ -24,7 +23,7 @@ const Overlay = styled(View)`
 `;
 
 const ModalContainer = styled(View)`
-  width: ${responsive(320)}px;
+  width: 320px;
   background-color: white;
   justify-content: center;
   align-items: center;
@@ -96,7 +95,7 @@ const ModalLayout: React.FC<ModalProps> = ({
       <Toast
         config={toastStyle}
         position="bottom"
-        bottomOffset={responsive(60, 'height')}
+        bottomOffset={60}
         visibilityTime={2000}
       />
     </Modal>

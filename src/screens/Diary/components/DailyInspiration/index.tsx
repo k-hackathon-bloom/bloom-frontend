@@ -3,7 +3,6 @@ import { ScrollView } from 'react-native';
 import DailyQuestionCard from '@screens/Diary/components/DailyInspiration/DailyQuestionCard';
 import DailySayingCard from '@screens/Diary/components/DailyInspiration/DailySayingCard';
 import SpacedView from '@components/common/SpacedView';
-import responsive from '@utils/responsive';
 
 interface DailyInspirationProps {
   question: string;
@@ -18,7 +17,7 @@ const DailyInspiration: React.FC<DailyInspirationProps> = ({
 }) => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      <SpacedView gap={responsive(20, 'height')} direction="row">
+      <SpacedView gap={20} direction="row">
         <DailyQuestionCard
           content={question}
           handleOpenModal={handleOpenModal}

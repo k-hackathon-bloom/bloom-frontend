@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TouchableOpacity, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { SwipeRow } from 'react-native-swipe-list-view';
 import ItemLayout from '@components/ItemLayout';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 import useAnimatedValue from '@hooks/useAnimatedValue';
 import DeleteIcon from '@assets/icons/delete.svg';
 
@@ -12,9 +11,9 @@ const DoneListContainer = styled(ItemLayout)`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  height: ${responsive(60, 'height')}px;
-  padding: 0 ${responsive(20, 'height')}px;
-  border-radius: ${responsive(8, 'height')}px;
+  height: 60px;
+  padding: 0 20px;
+  border-radius: 8px;
   overflow: hidden;
 `;
 
@@ -28,8 +27,8 @@ const ButtonWrapper = styled(TouchableOpacity)`
 `;
 
 const DoneListTitle = styled(StyledText)`
-  font-size: ${responsive(14, 'height')}px;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
+  font-size: 14px;
+  letter-spacing: -0.5px;
 `;
 
 const DeleteTaskButton = styled(TouchableOpacity)`
@@ -41,7 +40,7 @@ const DeleteTaskButton = styled(TouchableOpacity)`
 
 const StyledDeleteIcon = styled(DeleteIcon)`
   position: absolute;
-  left: ${responsive(20, 'height')}px;
+  left: 20px;
 `;
 
 const HiddenItemContainer = styled(DoneListContainer)`
@@ -62,7 +61,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
   const { animatedValue: buttonWidth, animateToValue } = useAnimatedValue(0);
 
   useEffect(() => {
-    const targetWidth = responsive(55, 'height');
+    const targetWidth = 55;
     const listenerId = swipeValue.addListener(({ value }) => {
       const width = Math.min(value, targetWidth);
       animateToValue(width, 0, 0, false).start();
@@ -77,10 +76,7 @@ const HiddenItems: React.FC<HiddenItemsProps> = ({
     <HiddenItemContainer>
       <Animated.View style={{ width: buttonWidth }}>
         <DeleteTaskButton onPress={() => onDeleteTask(taskId)}>
-          <StyledDeleteIcon
-            width={responsive(15, 'height')}
-            height={responsive(15, 'height')}
-          />
+          <StyledDeleteIcon width={15} height={15} />
         </DeleteTaskButton>
       </Animated.View>
     </HiddenItemContainer>
@@ -113,19 +109,22 @@ const DoneListItem: React.FC<DoneListItemProps> = ({
   setIsSwiping,
 }) => {
   const swipeRowRef = useRef<SwipeRow<unknown> | null>(null);
+  const [isRowOpen, setIsRowOpen] = useState(false);
   const { animatedValue: swipeValue } = useAnimatedValue(0);
 
   return (
     // @ts-expect-error
     <SwipeRow
       ref={swipeRowRef}
-      leftOpenValue={responsive(55, 'height')}
+      leftOpenValue={55}
       disableLeftSwipe={true}
       onSwipeValueChange={(value) => {
         swipeValue.setValue(value.value);
       }}
       swipeGestureBegan={() => setIsSwiping(true)}
       swipeGestureEnded={() => setIsSwiping(false)}
+      onRowOpen={() => setIsRowOpen(true)}
+      onRowClose={() => setIsRowOpen(false)}
     >
       <HiddenItems
         taskId={id}
@@ -133,7 +132,7 @@ const DoneListItem: React.FC<DoneListItemProps> = ({
         swipeValue={swipeValue}
       />
       <DoneListContainer>
-        <ButtonWrapper onPress={handleOpenModal}>
+        <ButtonWrapper onPress={handleOpenModal} disabled={isRowOpen}>
           <DoneListTitle numberOfLines={1}>
             {title || '새로운 항목'}
           </DoneListTitle>

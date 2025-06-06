@@ -2,10 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import MenuHeader from '@components/common/MenuHeader';
-import responsive from '@utils/responsive';
 
 const HeaderContainer = styled(View)`
-  gap: ${responsive(8, 'height')}px;
+  gap: 8px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;

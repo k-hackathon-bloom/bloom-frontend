@@ -9,7 +9,6 @@ import React, {
 import { View, Animated, LayoutChangeEvent } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 const ScrollWrapper = styled(View)`
   flex: 1;
@@ -49,7 +48,7 @@ const AutoScrollText = forwardRef<SlidingTextHandles, SlidingTextProps>(
 
     const startScrollAnimation = useCallback(() => {
       const scrollDistance = scrollWidth.current - screenWidth.current;
-      if (scrollDistance <= responsive(3)) return;
+      if (scrollDistance <= 3) return;
 
       Animated.timing(scrollX, {
         toValue: -scrollDistance,

@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 export interface HeaderProps {
   title: string;
@@ -13,12 +12,12 @@ export interface HeaderProps {
 const HeaderContainer = styled(View)`
   flex-direction: row;
   align-items: center;
-  margin-bottom: ${responsive(20, 'height')}px;
+  margin-bottom: 20px;
 `;
 
 const HeaderTitle = styled(StyledText)<{ isCentered: boolean }>`
-  font-size: ${responsive(20, 'height')}px;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
+  font-size: 20px;
+  letter-spacing: -0.5px;
   text-align: ${(props) => (props.isCentered ? 'center' : 'left')};
 `;
 

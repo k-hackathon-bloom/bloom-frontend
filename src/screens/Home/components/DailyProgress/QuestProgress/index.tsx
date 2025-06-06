@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import styled from 'styled-components/native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 import theme from '@styles/theme';
 
 const TextContainer = styled(View)`
@@ -11,13 +10,13 @@ const TextContainer = styled(View)`
 `;
 
 const Title = styled(StyledText)`
-  font-size: ${responsive(14)}px;
+  font-size: 14px;
 `;
 
 const ProgressText = styled(StyledText)`
-  margin-top: ${responsive(5)}px;
-  font-size: ${responsive(27)}px;
-  letter-spacing: ${responsive(-1.5)}px;
+  margin-top: 5px;
+  font-size: 27px;
+  letter-spacing: -1.5px;
 `;
 
 interface QuestProgressProps {
@@ -41,8 +40,8 @@ const QuestProgress: React.FC<QuestProgressProps> = ({
 
   return (
     <AnimatedCircularProgress
-      size={responsive(160)}
-      width={responsive(10)}
+      size={160}
+      width={10}
       fill={progressPercentage}
       tintColor={theme.COLORS.PROGRESS_BAR_PRIMARY}
       backgroundColor={theme.COLORS.PROGRESS_BAR_BACKGROUND}

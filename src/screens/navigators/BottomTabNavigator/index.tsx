@@ -9,7 +9,6 @@ import HomeIcon from '@assets/icons/home.svg';
 import DiaryIcon from '@assets/icons/diary.svg';
 import MonthlyReportIcon from '@assets/icons/monthly-report.svg';
 import BottleMessageIcon from '@assets/icons/bottle-message.svg';
-import responsive from '@utils/responsive';
 import theme from '@styles/theme';
 
 const Tab = createBottomTabNavigator();
@@ -34,14 +33,14 @@ const renderTabIcon = (
 );
 
 const BottomTabNavigator = (): JSX.Element => {
-  const iconSize = responsive(32, 'height');
+  const iconSize = 32;
 
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         tabBarStyle: {
-          height: responsive(100, 'height'),
+          height: 100,
           backgroundColor: theme.COLORS.SCREEN_BACKGROUND,
           borderTopWidth: 0,
         },

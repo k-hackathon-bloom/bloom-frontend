@@ -3,10 +3,9 @@ import { View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import MenuHeader from '@components/common/MenuHeader';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 const HeaderContainer = styled(View)`
-  gap: ${responsive(8, 'height')}px;
+  gap: 8px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -14,14 +13,14 @@ const HeaderContainer = styled(View)`
 
 const QuestResetButton = styled(TouchableOpacity)`
   background: ${(props) => props.theme.COLORS.BUTTON_PRIMARY};
-  padding: ${responsive(4, 'height')}px ${responsive(6, 'height')}px;
-  border-radius: ${responsive(14, 'height')}px;
+  padding: 4px 6px;
+  border-radius: 14px;
 `;
 
 const ButtonTitle = styled(StyledText)`
   color: white;
   font-family: ${(props) => props.theme.FONT_WEIGHTS.MEDIUM};
-  font-size: ${responsive(11, 'height')}px;
+  font-size: 11px;
 `;
 
 const DailyQuestHeader = ({ onPress }: { onPress: () => void }) => {

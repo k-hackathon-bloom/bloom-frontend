@@ -5,7 +5,6 @@ import { useUpdateAnswerMutation } from '@hooks/mutations/questionMutations';
 import StyledButton from '@components/common/StyledButton';
 import WordBreakText from '@components/common/WordBreakText';
 import SpacedView from '@components/common/SpacedView';
-import responsive from '@utils/responsive';
 
 const ContentContainer = styled(View)`
   width: 100%;
@@ -14,31 +13,31 @@ const ContentContainer = styled(View)`
 const QuestionText = styled(WordBreakText).attrs(() => ({
   containerStyle: {
     justifyContent: 'center',
-    paddingHorizontal: responsive(30),
+    paddingHorizontal: 30,
   },
   textStyle: {
     fontFamily: 'GowunDodum-Regular',
-    fontSize: responsive(16, 'height'),
-    letterSpacing: responsive(-1, 'height'),
+    fontSize: 16,
+    letterSpacing: -1,
   },
 }))``;
 
 const ButtonContainer = styled(View)`
   width: 100%;
   align-items: center;
-  gap: ${responsive(5, 'height')}px;
-  margin-top: ${responsive(10, 'height')}px;
+  gap: 5px;
+  margin-top: 10px;
 `;
 
 const AnswerInput = styled(TextInput)`
-  height: ${responsive(120, 'height')}px;
+  height: 120px;
   font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
-  font-size: ${responsive(14, 'height')}px;
+  font-size: 14px;
   text-align: justify;
   text-align-vertical: top;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
-  line-height: ${responsive(24, 'height')}px;
-  padding: 0 ${responsive(15)}px;
+  letter-spacing: -0.5px;
+  line-height: 24px;
+  padding: 0 15px;
 `;
 
 export interface QuestionModalContentHandles {
@@ -70,7 +69,7 @@ const QuestionModalContent = forwardRef<
 
   return (
     <ContentContainer>
-      <SpacedView gap={responsive(20, 'height')}>
+      <SpacedView gap={20}>
         <QuestionText text={question} />
         <AnswerInput
           multiline

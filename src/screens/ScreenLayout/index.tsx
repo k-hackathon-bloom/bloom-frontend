@@ -1,7 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, StyleProp, ViewStyle } from 'react-native';
 import styled from 'styled-components/native';
-import responsive from '@utils/responsive';
 
 const Container = styled(SafeAreaView)<{ backgroundColor?: string }>`
   flex: 1;
@@ -11,7 +10,7 @@ const Container = styled(SafeAreaView)<{ backgroundColor?: string }>`
 
 const Content = styled(View)`
   flex: 1;
-  padding: ${responsive(26)}px ${responsive(26)}px 0 ${responsive(26)}px;
+  padding: 26px 26px 0 26px;
 `;
 
 interface LayoutProps {

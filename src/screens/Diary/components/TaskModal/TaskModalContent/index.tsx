@@ -22,7 +22,6 @@ import {
 import { useTaskDetailQuery } from '@hooks/queries/taskQueries';
 import { useUpdateTaskMutation } from '@hooks/mutations/taskMutations';
 import StyledButton from '@components/common/StyledButton';
-import responsive from '@utils/responsive';
 import SpacedView from '@components/common/SpacedView';
 
 const ContentContainer = styled(View)`
@@ -31,8 +30,8 @@ const ContentContainer = styled(View)`
 
 const TaskTitle = styled(TextInput)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
-  font-size: ${responsive(14, 'height')}px;
-  padding: 0 ${responsive(15)}px;
+  font-size: 14px;
+  padding: 0 15px;
 `;
 
 const StyledScrollView = styled(ScrollView).attrs(() => ({
@@ -44,32 +43,32 @@ const StyledScrollView = styled(ScrollView).attrs(() => ({
 
 const PhotoView = styled(View)`
   flex-direction: row;
-  padding: 0 ${responsive(10)}px;
-  gap: ${responsive(10)}px;
+  padding: 0 10px;
+  gap: 10px;
 `;
 
 const TaskPhoto = styled(Image)`
-  width: ${responsive(160)}px;
-  height: ${responsive(120)}px;
-  gap: ${responsive(8)}px;
+  width: 160px;
+  height: 120px;
+  gap: 8px;
 `;
 
 const TaskContent = styled(TextInput)`
-  height: ${responsive(120, 'height')}px;
+  height: 120px;
   font-family: ${(props) => props.theme.FONT_WEIGHTS.REGULAR};
-  font-size: ${responsive(14, 'height')}px;
+  font-size: 14px;
   text-align: justify;
   text-align-vertical: top;
-  letter-spacing: ${responsive(-0.5, 'height')}px;
-  line-height: ${responsive(24, 'height')}px;
-  padding: 0 ${responsive(15)}px;
+  letter-spacing: -0.5px;
+  line-height: 24px;
+  padding: 0 15px;
 `;
 
 const ButtonContainer = styled(View)`
   width: 100%;
   align-items: center;
-  gap: ${responsive(5, 'height')}px;
-  margin-top: ${responsive(10, 'height')}px;
+  gap: 5px;
+  margin-top: 10px;
 `;
 
 const IMAGE_QUALITY = 1;
@@ -235,7 +234,7 @@ const TaskModalContent = forwardRef<
 
   return (
     <ContentContainer>
-      <SpacedView gap={responsive(20, 'height')}>
+      <SpacedView gap={20}>
         <TaskTitle
           value={taskTitle}
           onChangeText={setTaskTitle}

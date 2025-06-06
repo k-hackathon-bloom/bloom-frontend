@@ -1,4 +1,3 @@
-import responsive from '@utils/responsive';
 import iconBackground from '@screens/SplashScreen/AnimatedIcon/innerHtml/iconBackground';
 
 const innerHtml = `
@@ -28,7 +27,7 @@ const innerHtml = `
         position: relative;
         width: 64%;
         left: 18%;
-        top: ${responsive(19, 'height')}px;
+        top: 19px;
         z-index: 2;
       }
       
@@ -36,7 +35,7 @@ const innerHtml = `
         position: relative;
         width: 84%;
         left: 8%;
-        top: ${responsive(45, 'height')}px;
+        top: 45px;
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
       }

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Platform, ViewStyle } from 'react-native';
 import styled from 'styled-components/native';
 import { ShadowedView } from 'react-native-fast-shadow';
-import responsive from '@utils/responsive';
 
 const Container = styled(
   Platform.select({
@@ -10,8 +9,8 @@ const Container = styled(
   }) || View,
 )<{ shadow?: boolean }>`
   background-color: white;
-  padding: ${responsive(15)}px;
-  border-radius: ${responsive(8)}px;
+  padding: 15px;
+  border-radius: 8px;
   justify-content: center;
   ${(props) =>
     props.shadow &&

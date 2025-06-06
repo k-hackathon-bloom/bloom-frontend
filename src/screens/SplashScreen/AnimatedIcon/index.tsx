@@ -2,12 +2,11 @@ import React from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { WebView } from 'react-native-webview';
 import styled from 'styled-components/native';
-import responsive from '@utils/responsive';
 import innerHtml from '@screens/SplashScreen/AnimatedIcon/innerHtml';
 
 const WebViewContainer = styled(View)`
-  width: ${responsive(110, 'height')}px;
-  height: ${responsive(155, 'height')}px;
+  width: 110px;
+  height: 155px;
 `;
 
 const StyledWebView = styled(WebView)`

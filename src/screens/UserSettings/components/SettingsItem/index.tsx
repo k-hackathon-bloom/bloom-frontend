@@ -2,10 +2,9 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 const MenuButton = styled(TouchableOpacity)<{ isLast?: boolean }>`
-  padding: ${responsive(25, 'height')}px ${responsive(5, 'height')}px;
+  padding: 25px 5px;
   border-bottom-width: ${(props) => (props.isLast ? 0 : 0.5)}px;
   border-bottom-color: lightgray;
 `;

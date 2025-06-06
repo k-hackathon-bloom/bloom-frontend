@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 const Button = styled(TouchableOpacity)<{
   buttonTheme: 'primary' | 'secondary';
@@ -18,8 +17,8 @@ const Button = styled(TouchableOpacity)<{
       ? 'white'
       : props.theme.COLORS.BUTTON_PRIMARY};
   width: 100%;
-  padding: ${responsive(16, 'height')}px;
-  border-radius: ${responsive(6, 'height')}px;
+  padding: 16px;
+  border-radius: 6px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -32,7 +31,7 @@ const ButtonTitle = styled(StyledText)<{
     props.buttonTheme === 'secondary'
       ? props.theme.FONT_WEIGHTS.REGULAR
       : props.theme.FONT_WEIGHTS.MEDIUM};
-  font-size: ${responsive(15, 'height')}px;
+  font-size: 15px;
   color: ${(props) =>
     props.buttonTheme === 'secondary'
       ? props.theme.COLORS.BUTTON_PRIMARY
@@ -42,7 +41,7 @@ const ButtonTitle = styled(StyledText)<{
 const IconWrapper = styled(View)`
   align-items: center;
   justify-content: center;
-  margin-right: ${responsive(10, 'height')}px;
+  margin-right: 10px;
 `;
 
 interface ButtonProps {

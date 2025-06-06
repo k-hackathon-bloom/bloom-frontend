@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 import StyledButton from '@components/common/StyledButton';
 import SpacedView from '@components/common/SpacedView';
 import SelectableItem from '@screens/Home/components/QuestModal/SelectableItem';
-import responsive from '@utils/responsive';
 import Quest from '@type/Quest';
 
 const ContentContainer = styled(View)`
@@ -19,8 +18,8 @@ const QuestListContainer = styled(ScrollView)`
 const ButtonContainer = styled(View)`
   width: 100%;
   align-items: center;
-  gap: ${responsive(5, 'height')}px;
-  margin-top: ${responsive(10, 'height')}px;
+  gap: 5px;
+  margin-top: 10px;
 `;
 
 interface QuestListProps {
@@ -43,7 +42,7 @@ const QuestList: React.FC<QuestListProps> = ({
           <SelectableItem
             key={quest.id}
             title={quest.title}
-            iconUrl={`http://${quest.iconUrl}`}
+            iconUrl={quest.iconUrl}
             isSelected={selectedQuestIds.includes(quest.id)}
             isDone={completedQuestIds.includes(quest.id)}
             onPress={() => onSelectQuest(quest.id)}

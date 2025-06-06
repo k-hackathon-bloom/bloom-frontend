@@ -3,7 +3,6 @@ import { View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { SvgUri } from 'react-native-svg';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 
 const ItemContainer = styled(TouchableOpacity)<{ isSelected?: boolean }>`
   width: 100%;
@@ -11,20 +10,20 @@ const ItemContainer = styled(TouchableOpacity)<{ isSelected?: boolean }>`
     props.isSelected ? props.theme.COLORS.ITEM_SELECTED : 'white'};
   flex-direction: row;
   align-items: center;
-  padding: ${responsive(14, 'height')}px ${responsive(20, 'height')}px;
+  padding: 14px 20px;
 `;
 
 const IconWrapper = styled(View)`
-  width: ${responsive(20, 'height')}px;
+  width: 20px;
   align-items: center;
-  margin-right: ${responsive(14, 'height')}px;
+  margin-right: 14px;
 `;
 
 const ItemIcon = styled(SvgUri)``;
 
 const ItemTitle = styled(StyledText)`
-  font-size: ${responsive(13, 'height')}px;
-  letter-spacing: ${responsive(-0.8, 'height')}px;
+  font-size: 13px;
+  letter-spacing: -1px;
 `;
 
 const DisabledOverlay = styled(View)`
@@ -54,7 +53,7 @@ const SelectableItem: React.FC<SelectableItemProps> = ({
   return (
     <ItemContainer isSelected={isSelected} disabled={isDone} onPress={onPress}>
       <IconWrapper>
-        <ItemIcon uri={iconUrl} width={responsive(20, 'height')} />
+        <ItemIcon uri={iconUrl} width={20} />
       </IconWrapper>
       <ItemTitle>{title}</ItemTitle>
       {isDone && <DisabledOverlay />}

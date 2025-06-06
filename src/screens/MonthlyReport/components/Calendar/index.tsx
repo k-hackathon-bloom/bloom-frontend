@@ -8,13 +8,12 @@ import {
 import { SvgUri } from 'react-native-svg';
 import StyledText from '@components/common/StyledText';
 import ItemLayout from '@components/ItemLayout';
-import responsive from '@utils/responsive';
 import theme from '@styles/theme';
 import BackIcon from '@assets/icons/back.svg';
 import ForwardIcon from '@assets/icons/forward.svg';
 
 const CalendarContainer = styled(ItemLayout)`
-  padding: ${responsive(35, 'height')}px ${responsive(20, 'height')}px;
+  padding: 35px 20px;
   align-items: center;
 `;
 
@@ -22,35 +21,35 @@ const CalendarHeader = styled(View)`
   flex-direction: row;
   align-items: center;
   width: 90%;
-  margin-bottom: ${responsive(15, 'height')}px;
+  margin-bottom: 15px;
 `;
 
 const YearText = styled(StyledText)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.LIGHT};
-  font-size: ${responsive(28, 'height')}px;
-  margin-right: ${responsive(8, 'height')}px;
+  font-size: 28px;
+  margin-right: 8px;
 `;
 
 const MonthText = styled(StyledText)`
   font-family: ${(props) => props.theme.FONT_WEIGHTS.MEDIUM};
-  font-size: ${responsive(28, 'height')}px;
+  font-size: 28px;
 `;
 
 const ButtonContainer = styled(View)`
   position: absolute;
   flex-direction: row;
-  height: ${responsive(48, 'height')}px;
-  right: ${responsive(-12, 'height')}px;
+  height: 48px;
+  right: -12px;
 `;
 
 const Button = styled(TouchableOpacity)`
   justify-content: center;
-  padding: ${responsive(12, 'height')}px;
+  padding: 12px;
 `;
 
 const DayCell = styled(View)<{ isToday?: boolean }>`
   width: ${100 / 7}%;
-  padding: ${responsive(5, 'height')}px;
+  padding: 5px;
   align-items: center;
   background-color: ${(props) =>
     props.isToday ? props.theme.COLORS.CELL_TODAY : 'transparent'};
@@ -59,7 +58,7 @@ const DayCell = styled(View)<{ isToday?: boolean }>`
 const WeekDayWrapper = styled(View)`
   flex-direction: row;
   flex-wrap: wrap;
-  margin-bottom: ${responsive(10, 'height')}px;
+  margin-bottom: 10px;
 `;
 
 const WeekDayCell = styled(DayCell)`
@@ -67,7 +66,7 @@ const WeekDayCell = styled(DayCell)`
 `;
 
 const WeekDayText = styled(StyledText)<{ weekDay: string }>`
-  font-size: ${responsive(14, 'height')}px;
+  font-size: 14px;
   color: ${(props) =>
     props.weekDay === '토'
       ? theme.COLORS.TEXT_SATURDAY
@@ -82,12 +81,12 @@ const DatesWrapper = styled(View)`
 `;
 
 const FlowerIconWrapper = styled(View)`
-  height: ${responsive(30, 'height')}px;
+  height: 30px;
   justify-content: center;
 `;
 
 const DateText = styled(StyledText)<{ isToday: boolean; day: number }>`
-  font-size: ${responsive(12, 'height')}px;
+  font-size: 12px;
   font-family: ${(props) =>
     props.isToday
       ? props.theme.FONT_WEIGHTS.BOLD
@@ -213,8 +212,8 @@ const Calendar = () => {
                       <SvgUri
                         key={dailyAchievement.date}
                         uri={dailyAchievement.flowerIconUrl}
-                        width={responsive(15, 'height')}
-                        height={responsive(15, 'height')}
+                        width={15}
+                        height={15}
                         onLoad={() => {
                           if (iconScalesRef.current[dailyAchievement.date]) {
                             Animated.timing(
@@ -263,16 +262,10 @@ const Calendar = () => {
         <MonthText>{currentMonth.toString().padStart(2, '0')}</MonthText>
         <ButtonContainer>
           <Button onPress={handlePrevMonth}>
-            <BackIcon
-              width={responsive(12, 'height')}
-              height={responsive(12, 'height')}
-            />
+            <BackIcon width={12} height={12} />
           </Button>
           <Button onPress={handleNextMonth}>
-            <ForwardIcon
-              width={responsive(12, 'height')}
-              height={responsive(12, 'height')}
-            />
+            <ForwardIcon width={12} height={12} />
           </Button>
         </ButtonContainer>
       </CalendarHeader>

@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from 'styled-components/native';
 import Toast from 'react-native-toast-message';
 import theme from '@styles/theme';
-import responsive from '@utils/responsive';
 import toastStyle from '@styles/toastStyle';
 import StackNavigator from '@screens/navigators/StackNavigator';
 
@@ -22,7 +21,7 @@ const App = () => {
           <Toast
             config={toastStyle}
             position="bottom"
-            bottomOffset={responsive(60, 'height')}
+            bottomOffset={60}
             visibilityTime={2000}
           />
         </ThemeProvider>

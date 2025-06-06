@@ -2,27 +2,26 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import StyledText from '@components/common/StyledText';
-import responsive from '@utils/responsive';
 import MinusIcon from '@assets/icons/quest_minus.svg';
 import PlusIcon from '@assets/icons/quest_plus.svg';
 
 const CounterContainer = styled(View)`
   position: absolute;
-  right: ${responsive(14, 'height')}px;
+  right: 14px;
   flex-direction: row;
   align-items: center;
 `;
 
 const Counter = styled(StyledText)`
-  font-size: ${responsive(14, 'height')}px;
+  font-size: 14px;
 `;
 
 const DecreaseButton = styled(TouchableOpacity)`
-  padding: ${responsive(10, 'height')}px;
+  padding: 10px;
 `;
 
 const IncreaseButton = styled(TouchableOpacity)`
-  padding: ${responsive(10, 'height')}px;
+  padding: 10px;
 `;
 
 interface QuestCounterProps {
@@ -65,17 +64,11 @@ const QuestCounter: React.FC<QuestCounterProps> = ({
   return (
     <CounterContainer>
       <DecreaseButton onPress={handleDecrease}>
-        <MinusIcon
-          width={responsive(14, 'height')}
-          height={responsive(14, 'height')}
-        />
+        <MinusIcon width={14} height={14} />
       </DecreaseButton>
       <Counter>{currentCount}</Counter>
       <IncreaseButton onPress={handleIncrease}>
-        <PlusIcon
-          width={responsive(14, 'height')}
-          height={responsive(14, 'height')}
-        />
+        <PlusIcon width={14} height={14} />
       </IncreaseButton>
     </CounterContainer>
   );

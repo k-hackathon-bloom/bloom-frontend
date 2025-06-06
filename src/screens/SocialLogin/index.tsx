@@ -3,7 +3,6 @@ import { ImageBackground, View, Image, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styled from 'styled-components/native';
 import Toast from 'react-native-toast-message';
-import responsive from '@utils/responsive';
 import StyledText from '@components/common/StyledText';
 import StyledButton from '@components/common/StyledButton';
 import ScreenLayout from '@screens/ScreenLayout';
@@ -24,21 +23,21 @@ const SloganContainer = styled(View)`
 
 const LoginButtonContainer = styled(View)`
   position: absolute;
-  bottom: ${responsive(75, 'height')}px;
+  bottom: 75px;
   width: 88%;
   align-items: center;
 `;
 
 const AppIcon = styled(Image)`
-  width: ${responsive(60, 'height')}px;
-  height: ${responsive(60, 'height')}px;
-  margin-bottom: ${responsive(15, 'height')}px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
 `;
 
 const SloganText = styled(StyledText)`
-  font-size: ${responsive(28, 'height')}px;
+  font-size: 28px;
   color: ${(props) => props.theme.COLORS.TEXT_SLOGAN};
-  letter-spacing: ${responsive(-1, 'height')}px;
+  letter-spacing: -1px;
 `;
 
 const HighlightedText = styled(StyledText)`
@@ -110,12 +109,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({ onPress }) => (
   <LoginButtonContainer>
     <StyledButton
       title="카카오 계정으로 로그인"
-      icon={
-        <KakaoIcon
-          width={responsive(20, 'height')}
-          height={responsive(20, 'height')}
-        />
-      }
+      icon={<KakaoIcon width={20} height={20} />}
       titleStyle={{
         color: theme.COLORS.TEXT_KAKAO,
         fontFamily: theme.FONT_WEIGHTS.BOLD,
