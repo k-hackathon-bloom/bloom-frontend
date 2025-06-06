@@ -115,6 +115,7 @@ const DoneListItem: React.FC<DoneListItemProps> = ({
   return (
     // @ts-expect-error
     <SwipeRow
+      style={{ borderRadius: 8, overflow: 'hidden' }}
       ref={swipeRowRef}
       leftOpenValue={55}
       disableLeftSwipe={true}

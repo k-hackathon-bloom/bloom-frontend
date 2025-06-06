@@ -174,6 +174,7 @@ const ActiveQuestItem: React.FC<QuestItemProps> = ({
   return (
     // @ts-expect-error
     <SwipeRow
+      style={{ borderRadius: 8, overflow: 'hidden' }}
       ref={swipeRowRef}
       leftOpenValue={140}
       disableLeftSwipe={true}
